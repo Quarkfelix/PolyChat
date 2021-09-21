@@ -12,10 +12,11 @@ namespace PolyChat
 {
     public class Controller
     {
-        public static IPAddress ip;
+        public static string ip;
         private MainPage UIController;
 
         private ClientHandler clientHandler;
+        /*
         public Controller(MainPage uiController)
         {
             UIController = uiController;
@@ -30,9 +31,9 @@ namespace PolyChat
 
         public void sendMessage(String ip, String name, String msg)
         {
-            clientHandler.getClient(ip).sendMessage(SendCode.Message, name, msg, DateTime.Now);
+            clientHandler.getClient(ip).sendMessage(SendCode.Message, msg, DateTime.Now);
         }
-
+        */
         /// <summary>
         /// prints out ip. on server side automatticaly finds 10.... ip (which is the correct one)
         /// </summary>
@@ -93,11 +94,16 @@ namespace PolyChat
             Console.WriteLine($"Message received from {socket.GetHashCode()}:{message.Data[0]}");
         }
 
-        static IPAddress[] GetIPs()
+        static string[] GetIPs()
         {
             IPHostEntry ipEntry = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress[] addr = ipEntry.AddressList;
-            return addr;
+            string[] ips = new string[addr.Length];
+            for (int i=0; i<addr.Length; i++)
+            {
+                ips[i] = addr.ToString();
+            }
+            return ips;
         }
 
     }

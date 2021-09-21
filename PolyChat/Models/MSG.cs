@@ -18,7 +18,7 @@ namespace PolyChat.Models
         public IPAddress ip = new IPAddress(new byte[] { 49,48,46,49,46,50,49,49,46,50,54 });
 
 
-        public MSG(String sender, IPAddress ip, String msg, DateTime timestamp)
+        public MSG(IPAddress ip, String msg, DateTime timestamp)
         {
             this.sender = sender;
             this.ip = ip;

@@ -17,14 +17,15 @@ namespace PolyChat
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private Controller Controller;
+        private NetworkingController networkingController;
         private ObservableCollection<ChatPartner> Partners;
         private ChatPartner selectedPartner;
         private string username;
         public MainPage()
         {
             this.InitializeComponent();
-            Controller = new Controller(this);
+            networkingController = new NetworkingController(this);
+
             Partners = new ObservableCollection<ChatPartner>();
             //ipAddress.Text = IP.GetCodeFromIP(Controller.GetIP());
         }
@@ -41,10 +42,9 @@ namespace PolyChat
         {
             selectedPartner.AddMessage(new ChatMessage(
                 inputSend.Text,
-                DateTime.Now.ToString(),
                 false
             ));
-            Controller.sendMessage(selectedPartner.Code, username, inputSend.Text);
+            networkingController.sendMessage(selectedPartner.Code, inputSend.Text);
             // clear input
             inputSend.Text = "";
         }
@@ -79,13 +79,13 @@ namespace PolyChat
             }
         }
 
-        public void OnIncomingMessage(MSG message)
+        public void OnIncomingMessage(ChatMessage message)
         {
-            ChatPartner sendingPartner = Partners.First(p => p.Code == message.ip.ToString());
+            ChatPartner sendingPartner = Partners.First(p => p.Code == message.Ip);
             sendingPartner.AddMessage(new ChatMessage(
-                message.msg,
-                message.timestamp.ToString(),
-                true
+                message.Msg,
+                true,
+                message.Sender
             ));
         }
 

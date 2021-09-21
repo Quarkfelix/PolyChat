@@ -98,8 +98,8 @@
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="models:ChatMessage">
                             <StackPanel x:Name="Message" Margin="0 4" Padding="16 8" CornerRadius="4" Background="{ThemeResource SystemAccentColor}">
-                                <TextBlock Text="{x:Bind Text}"/>
-                                <TextBlock Text="{x:Bind Date}"/>
+                                <TextBlock Text="{x:Bind Msg}"/>
+                                <TextBlock Text="{x:Bind StringTimeStamp}"/>
                                 <TextBlock Text="{x:Bind Foreign}"/>
                             </StackPanel>
                         </DataTemplate>

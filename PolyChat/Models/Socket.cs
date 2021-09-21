@@ -14,7 +14,7 @@ namespace PolyChat.Models
     {
         private Controller p;
         private readonly ushort Port;
-        private SocketIOServer Server;
+        private SocketIOServer server;
         private List<SocketIOSocket> Sockets = new List<SocketIOSocket>();
 
         /// <summary>
@@ -25,9 +25,9 @@ namespace PolyChat.Models
         {
             this.Port = Port;
             this.p = p;
-            Server = new SocketIOServer(new SocketIOServerOption(Port));
-            Server.OnConnection((socket) => OnConnect(socket));
-            Server.Start();
+            server = new SocketIOServer(new SocketIOServerOption(Port));
+            server.OnConnection((socket) => OnConnect(socket));
+            server.Start();
             Console.WriteLine($"Server started, binding to port {Port}, waiting for connection...");
         }
 

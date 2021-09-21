@@ -10,31 +10,27 @@ using SocketIOSharp.Server.Client;
 using EngineIOSharp.Common.Enum;
 using Json.Net;
 using System.Net;
-using SocketIOSharp.Client;
-using SocketIOSharp.Common;
 using SocketIOSharp.Common.Packet;
-using System;
-using System.Net;
-using EngineIOSharp.Common.Enum;
 using System.Threading;
+using PolyChat.Models.Exceptions;
 
 namespace PolyChat.Models
 {
     class Client
     {
         private SocketIOClient connection;
-        public Boolean isConnected = false;
-        private List<MSG> msgStack = new List<MSG>();
-        private Boolean active = true;
-        private String ip;
+        private Boolean connected = false;
+        private String ipSelf;
 
         public Client(SocketIOClient connection, String ip)
         {
-            this.ip = ip;
+            this.ipSelf = ip;
             this.connection = connection;
             InitEventHandlers(this, connection);
         }
 
+        //Sending
+        //===================================================================================
         /// <summary>
         /// converts String message into json file and sends it to the server.
         /// </summary>
@@ -44,12 +40,44 @@ namespace PolyChat.Models
         /// <param name="sender">Sender of Message</param>
         /// <param name="chatMessage">the accual text the user wants to send</param>
         /// <param name="timestamp">current time</param>
-        public void sendMessage(SendCode code, String sender, String chatMessage, DateTime timestamp)
+        public void sendMessage(SendCode code, String chatMessage)
         {
             new Thread(() =>
             {
                 //create msg
-                MSG msg = new MSG(sender, Controller.ip, chatMessage, timestamp);
+                ChatMessage msg = new ChatMessage(chatMessage, false, Controller.ip);
+
+                //convert msg
+                String petJson = JsonNet.Serialize(msg);
+
+                //wait if not connected and send msg
+                int i=0;
+                int sleeptimer = 2000;
+                while(!this.connected)
+                {
+                    Thread.Sleep(sleeptimer);
+                    i++;
+                    if(i>=10)
+                    {
+                        throw new MessageTimedOutException(i*sleeptimer);
+                    }
+                }
+                connection.Emit(code.ToString(), petJson);
+            }).Start();
+        }
+        /*
+        /// <summary>
+        /// Sends Message with new name
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="nameChange"></param>
+        /// <param name="timestamp"></param>
+        public void sendNameChange(SendCode code, String nameChange)
+        {
+            new Thread(() =>
+            {
+                //create msg
+                ChatMessage msg = new ChatMessage( Controller.ip);
 
                 //convert msg
                 String petJson = JsonNet.Serialize(msg);
@@ -58,17 +86,12 @@ namespace PolyChat.Models
                 connection.Emit(code.ToString(), petJson);
             }).Start();
         }
-
-        /*
-        private void recieveMessage(String msg)
-        {
-            // deserialize json string
-            MSG pet = JsonNet.Deserialize<MSG>(msg);
-
-            //TODO: send message to GUI
-        }
         */
 
+        //==================================================================================
+        //EventHandeling
+        //===================================================================================
+        
         /// <summary>
         /// handles all events of client server communiation
         /// </summary>
@@ -78,32 +101,32 @@ namespace PolyChat.Models
         {
             connection.On(SendCode.Message.ToString(), (Data) =>
             {
-                MSG pet = JsonNet.Deserialize<MSG>(BitConverter.ToString(Data[0].ToObject<byte[]>()));
+                ChatMessage pet = JsonNet.Deserialize<ChatMessage>(BitConverter.ToString(Data[0].ToObject<byte[]>()));
                 //TODO: send message to GUI
             });
+
             connection.On(SendCode.Command.ToString(), (Data) =>
             {
                 Console.WriteLine("Command recieved!" + Data[0]);
             });
-            connection.On(SendCode.test1.ToString(), (Data) =>
-            {
-                Console.WriteLine("test1 recieved!" + Data[0]);
-            });
-            connection.On(SendCode.test2.ToString(), (Data) =>
-            {
-                Console.WriteLine("test2 recieved!" + Data[0]);
-            });
 
             connection.On(SocketIOEvent.CONNECTION, () =>
             {
-                Console.WriteLine("Connected!");
-                client.isConnected = true;
+                client.connected = true;
             });
         }
+        //==================================================================================
+        //Getter and Setter
+        //==================================================================================
 
         public String getIP()
         {
-            return this.ip;
+            return this.ipSelf;
+        }
+
+        public Boolean isConnected()
+        {
+            return this.connected;
         }
     }
 
