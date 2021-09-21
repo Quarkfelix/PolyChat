@@ -30,8 +30,8 @@
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Margin="0 0 8 0" Text="Connect to" Foreground="{ThemeResource SystemColorDisabledTextColor}"/>
                     <TextBlock x:Name="ipAddress" Grid.Column="1"/>
@@ -98,8 +98,8 @@
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="models:ChatMessage">
                             <StackPanel x:Name="Message" Margin="0 4" Padding="16 8" CornerRadius="4" Background="{ThemeResource SystemAccentColor}">
-                                <TextBlock Text="{x:Bind Msg}"/>
-                                <TextBlock Text="{x:Bind StringTimeStamp}"/>
+                                <TextBlock Text="{x:Bind Content}"/>
+                                <TextBlock Text="{x:Bind Timestamp.ToShortDateString()}"/>
                                 <TextBlock Text="{x:Bind Foreign}"/>
                             </StackPanel>
                         </DataTemplate>

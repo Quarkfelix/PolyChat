@@ -27,7 +27,7 @@ namespace PolyChat
             networkingController = new NetworkingController(this);
 
             Partners = new ObservableCollection<ChatPartner>();
-            //ipAddress.Text = IP.GetCodeFromIP(Controller.GetIP());
+            ipAddress.Text = IP.GetCodeFromIP(networkingController.getIP().ToString());
         }
 
         public void OnChatPartnerSelected(object sender, RoutedEventArgs e)
@@ -58,7 +58,7 @@ namespace PolyChat
                 string ip = dialog.getValue();
                 if (IP.ValidateIP(ip))
                 {
-                    Controller.Connect(ip);
+                    networkingController.connectNewClient(ip);
                     Partners.Add(new ChatPartner(
                         "Connecting...",
                         ip
@@ -83,7 +83,7 @@ namespace PolyChat
         {
             ChatPartner sendingPartner = Partners.First(p => p.Code == message.Ip);
             sendingPartner.AddMessage(new ChatMessage(
-                message.Msg,
+                message.Content,
                 true,
                 message.Sender
             ));

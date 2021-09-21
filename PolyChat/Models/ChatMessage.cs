@@ -6,17 +6,15 @@ namespace PolyChat.Models
     {
         public readonly string Sender;
         public readonly DateTime Timestamp = new DateTime(1970, 01, 01);
-        public readonly string Msg = "empty";
+        public readonly string Content;
         public readonly string Ip;
         public readonly bool Foreign;
-        public readonly string StringTimeStamp;
 
-        public ChatMessage(string Msg = "", bool Foreign = true, string Sender= "Unknown", string Ip = "127.0.0.1")
+        public ChatMessage(string Content = "", bool Foreign = true, string Sender= "Unknown", string Ip = "127.0.0.1")
         {
             this.Sender = Sender;
             this.Timestamp = DateTime.Now;
-            StringTimeStamp = Timestamp.ToString();
-            this.Msg = Msg;
+            this.Content = Content;
             this.Foreign = Foreign;
             this.Ip = Ip;
         }
@@ -25,7 +23,7 @@ namespace PolyChat.Models
         public string ToString()
         {
             string prefix = Foreign ? "Other" : "Me";
-            return $"{prefix}: {Msg}({Sender})";
+            return $"{prefix}: {Content}({Sender})";
         }
     }
 }
