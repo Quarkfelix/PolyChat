@@ -132,6 +132,10 @@
     <Compile Include="Models\Socket.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\IP.cs" />
+    <Compile Include="Views\EditUsernameDialog.xaml.cs">
+      <DependentUpon>EditUsernameDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\NewChatDialog.xaml.cs">
       <DependentUpon>NewChatDialog.xaml</DependentUpon>
     </Compile>
@@ -157,6 +161,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\EditUsernameDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

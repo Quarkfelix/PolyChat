@@ -14,12 +14,14 @@ namespace PolyChat.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class NewChatDialog : ContentDialog
+    public sealed partial class EditUsernameDialog : ContentDialog
     {
-        public NewChatDialog()
+        public EditUsernameDialog(string initialValue)
         {
             this.InitializeComponent();
-            IsPrimaryButtonEnabled = false;
+            if (initialValue == null || initialValue.Length == 0) IsSecondaryButtonEnabled = false;
+            else  input.Text = initialValue;
+            validate();
         }
 
         public string getValue()
@@ -29,14 +31,18 @@ namespace PolyChat.Views
 
         private void OnKeyUp(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
-            if (!IP.ValidateIP(IP.GetIPfromCode(input.Text)))
+            validate();
+        }
+
+        private void validate()
+        {
+            if (input.Text.Length == 0)
             {
-                textSuccess.Visibility = Visibility.Collapsed;
                 textError.Visibility = Visibility.Visible;
                 IsPrimaryButtonEnabled = false;
-            } else
+            }
+            else
             {
-                textSuccess.Visibility = Visibility.Visible;
                 textError.Visibility = Visibility.Collapsed;
                 IsPrimaryButtonEnabled = true;
             }

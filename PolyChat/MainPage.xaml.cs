@@ -1,4 +1,5 @@
 ﻿using PolyChat.Models;
+using PolyChat.Util;
 using PolyChat.Views;
 using System;
 using System.Collections.ObjectModel;
@@ -19,12 +20,13 @@ namespace PolyChat
         private Controller Controller;
         private ObservableCollection<ChatPartner> Partners;
         private ChatPartner selectedPartner;
+        private string username;
         public MainPage()
         {
             this.InitializeComponent();
             Controller = new Controller(this);
-
             Partners = new ObservableCollection<ChatPartner>();
+            //ipAddress.Text = IP.GetCodeFromIP(Controller.GetIP());
         }
 
         public void OnChatPartnerSelected(object sender, RoutedEventArgs e)
@@ -42,7 +44,7 @@ namespace PolyChat
                 DateTime.Now.ToString(),
                 false
             ));
-            Controller.sendMessage(selectedPartner.Code, inputUsername.Text, inputSend.Text);
+            Controller.sendMessage(selectedPartner.Code, username, inputSend.Text);
             // clear input
             inputSend.Text = "";
         }
@@ -53,12 +55,27 @@ namespace PolyChat
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                string ip = dialog.getText();
-                Controller.Connect(ip);
-                Partners.Add(new ChatPartner(
-                    "NO NAME",
-                    ip
-                ));
+                string ip = dialog.getValue();
+                if (IP.ValidateIP(ip))
+                {
+                    Controller.Connect(ip);
+                    Partners.Add(new ChatPartner(
+                        "Connecting...",
+                        ip
+                    ));
+                }
+            }
+        }
+
+        public async void OnOpenEditUsernameDialog(object sender = null, RoutedEventArgs e = null)
+        {
+            EditUsernameDialog dialog = new EditUsernameDialog(username);
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                username = dialog.getValue();
+                if (username.Length == 0) textUsername.Text = "Unknown";
+                else textUsername.Text = username;
             }
         }
 
