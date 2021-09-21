@@ -139,10 +139,7 @@ namespace PolyChat.Models
                 Console.WriteLine("Command recieved!" + Data[0]);
             });
 
-            connection.On(SocketIOEvent.CONNECTION, () =>
-            {
-                client.connected = true;
-            });
+            client.connected = true;
         }
         //==================================================================================
         //Getter and Setter
