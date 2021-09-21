@@ -11,15 +11,17 @@ namespace PolyChat.Models
         public readonly bool Foreign;
         public readonly string StringTimeStamp;
 
-        public ChatMessage(DateTime Timestamp, string Msg, bool Foreign = true, string Sender= "Unknown", string Ip = "127.0.0.1")
+        public ChatMessage(string Msg = "", bool Foreign = true, string Sender= "Unknown", string Ip = "127.0.0.1")
         {
             this.Sender = Sender;
-            this.Timestamp = Timestamp;
+            this.Timestamp = DateTime.Now;
             StringTimeStamp = Timestamp.ToString();
             this.Msg = Msg;
             this.Foreign = Foreign;
             this.Ip = Ip;
         }
+
+        
 
         override
         public string ToString()

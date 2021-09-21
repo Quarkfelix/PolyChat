@@ -16,6 +16,7 @@ namespace PolyChat
         private MainPage UIController;
 
         private ClientHandler clientHandler;
+        /*
         public Controller(MainPage uiController)
         {
             UIController = uiController;
@@ -30,9 +31,9 @@ namespace PolyChat
 
         public void sendMessage(String ip, String name, String msg)
         {
-            clientHandler.getClient(ip).sendMessage(SendCode.Message, name, msg, DateTime.Now);
+            clientHandler.getClient(ip).sendMessage(SendCode.Message, msg, DateTime.Now);
         }
-
+        */
         /// <summary>
         /// prints out ip. on server side automatticaly finds 10.... ip (which is the correct one)
         /// </summary>

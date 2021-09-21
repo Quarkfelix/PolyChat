@@ -4,7 +4,7 @@
     {
         Message,
         Command,
-        test1,
-        test2
+        NameChange,
+        Initial
     }
 }
