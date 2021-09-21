@@ -16,18 +16,18 @@ namespace PolyChat.Models
         private Boolean connected = true;
         private String ipSelf;
 
-        public Client(SocketIOClient connection, String ip)
+        public Client(SocketIOClient connection, String ip, MainPage uiController)
         {
             this.ipSelf = ip;
             this.connection_client = connection;
-            InitEventHandlers(this, connection);
+            InitEventHandlers(this, connection, uiController);
         }
 
-        public Client(SocketIOSocket connection, String ip)
+        public Client(SocketIOSocket connection, String ip, MainPage uiController)
         {
             this.ipSelf = ip;
             this.connection_server = connection;
-            InitEventHandlers(this, connection);
+            InitEventHandlers(this, connection, uiController);
         }
 
         //Sending
@@ -47,7 +47,7 @@ namespace PolyChat.Models
             {
                 Debug.WriteLine($"connected is {connected}");
                 //create msg
-                Message msg = new Message(chatMessage, false, Controller.ip);
+                Message msg = new Message(chatMessage, false, ipSelf);
 
                 //convert msg
                 String petJson = JsonNet.Serialize(msg);
@@ -73,48 +73,30 @@ namespace PolyChat.Models
                 }
             }).Start();
         }
-        /*
-        /// <summary>
-        /// Sends Message with new name
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="nameChange"></param>
-        /// <param name="timestamp"></param>
-        public void sendNameChange(SendCode code, String nameChange)
-        {
-            new Thread(() =>
-            {
-                //create msg
-                Message msg = new Message( Controller.ip);
-
-                //convert msg
-                String petJson = JsonNet.Serialize(msg);
-
-                //send msg
-                connection_client.Emit(code.ToString(), petJson);
-            }).Start();
-        }
-        */
 
         //==================================================================================
         //EventHandeling
         //===================================================================================
         
         /// <summary>
-        /// handles all events of client to server communiation
+        /// handles all events of client
         /// </summary>
         /// <param name="client">self</param>
         /// <param name="connection"></param>
-        private static void InitEventHandlers(Client client, SocketIOClient connection)
+        private static void InitEventHandlers(Client client, SocketIOClient connection, MainPage uiController)
         {
             connection.On(SendCode.Message.ToString(), (Data) =>
             {
-                Message pet = new Message(Data[0]);
+                Message msg = new Message(Data[0]);
+                uiController.OnIncomingMessage(msg);
+
                 //TODO: send message to GUI
             });
+
             connection.On(SendCode.Command.ToString(), (Data) =>
             {
                 Console.WriteLine("Command recieved!" + Data[0]);
+                
             });
 
             connection.On(SocketIOEvent.CONNECTION, () =>
@@ -124,15 +106,16 @@ namespace PolyChat.Models
         }
 
         /// <summary>
-        /// handles all events of server to client communiation
+        /// handles all events of server
         /// </summary>
         /// <param name="client">self</param>
         /// <param name="connection"></param>
-        private static void InitEventHandlers(Client client, SocketIOSocket connection)
+        private static void InitEventHandlers(Client client, SocketIOSocket connection, MainPage uiController)
         {
             connection.On(SendCode.Message.ToString(), (Data) =>
             {
-                Message pet = new Message(Data[0]);
+                Message msg = new Message(Data[0]);
+                uiController.OnIncomingMessage(msg);
                 //TODO: send message to GUI
             });
 

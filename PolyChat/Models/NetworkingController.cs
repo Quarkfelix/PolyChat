@@ -27,11 +27,7 @@ namespace PolyChat.Models
             this.uiController = uiController;
             this.Port = Port;
             ownIP = getIP();
-            Server = new SocketIOServer(new SocketIOServerOption(Port));
-            Server.OnConnection((socket) => connectNewClient(socket));
-            Server.Start();
-            Debug.WriteLine($"Your ip is: {ownIP}");
-            Debug.WriteLine($"Server started, binding to port {Port}, waiting for connection...");
+            startServer();
         }
 
         //EXTERNAL METHODS
@@ -45,7 +41,7 @@ namespace PolyChat.Models
         {
             SocketIOClient connection = new SocketIOClient(new SocketIOClientOption(EngineIOScheme.http, ip, 8050));
             connection.Connect();
-            clients.Add(new Client(connection, ip));
+            clients.Add(new Client(connection, ip, uiController));
         }
 
         /// <summary>
@@ -56,8 +52,9 @@ namespace PolyChat.Models
         {
             socket.On(SendCode.Initial.ToString(), (JToken[] Data) =>
             {
+                Debug.WriteLine("Client connected!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 Message m = new Message(Data[0]);
-                clients.Add(new Client(socket,m.Ip));
+                clients.Add(new Client(socket,m.Ip, uiController));
             });
         }
 
@@ -90,24 +87,23 @@ namespace PolyChat.Models
             return null;
         }
 
-        /*
-        /// <summary>
-        /// changes name of self and sends new name to all chats
-        /// </summary>
-        /// <param name="newName"></param>
-        public void changeName(String newName) 
+        public MainPage getUIController()
         {
-            this.ownName = newName;
-            foreach(Client cl in clients)
-            {
-                cl.sendNameChange(SendCode.NameChange, newName);
-            }
+            return this.uiController;
         }
-        */
+
 
         //=========================================================================================================================================================================================
         //INTERNAL METHODS
         //========================================================================================================================================================================================= 
+        private void startServer()
+        {
+            Server = new SocketIOServer(new SocketIOServerOption(Port));
+            Server.OnConnection((socket) => connectNewClient(socket));
+            Server.Start();
+            Debug.WriteLine($"Your ip is: {ownIP}");
+            Debug.WriteLine($"Server started, binding to port {Port}, waiting for connection...");
+        }
 
         /// <summary>
         /// returns client that fit to ip address
