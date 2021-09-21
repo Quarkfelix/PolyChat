@@ -38,8 +38,8 @@ namespace PolyChat
         public void OnSendMessage(object sender = null, RoutedEventArgs e = null)
         {
             selectedPartner.AddMessage(new ChatMessage(
+                DateTime.Now,
                 inputSend.Text,
-                DateTime.Now.ToString(),
                 false
             ));
             Controller.sendMessage(selectedPartner.Code, inputUsername.Text, inputSend.Text);
@@ -62,13 +62,14 @@ namespace PolyChat
             }
         }
 
-        public void OnIncomingMessage(MSG message)
+        public void OnIncomingMessage(ChatMessage message)
         {
-            ChatPartner sendingPartner = Partners.First(p => p.Code == message.ip.ToString());
+            ChatPartner sendingPartner = Partners.First(p => p.Code == message.Ip);
             sendingPartner.AddMessage(new ChatMessage(
-                message.msg,
-                message.timestamp.ToString(),
-                true
+                message.Timestamp,
+                message.Msg,
+                true,
+                message.Sender
             ));
         }
 

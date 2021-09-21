@@ -24,7 +24,7 @@ namespace PolyChat.Models
     {
         private SocketIOClient connection;
         public Boolean isConnected = false;
-        private List<MSG> msgStack = new List<MSG>();
+        private List<ChatMessage> msgStack = new List<ChatMessage>();
         private Boolean active = true;
         private String ip;
 
@@ -49,7 +49,7 @@ namespace PolyChat.Models
             new Thread(() =>
             {
                 //create msg
-                MSG msg = new MSG(sender, Controller.ip, chatMessage, timestamp);
+                ChatMessage msg = new ChatMessage(timestamp, chatMessage, false, sender, Controller.ip);
 
                 //convert msg
                 String petJson = JsonNet.Serialize(msg);
@@ -78,7 +78,7 @@ namespace PolyChat.Models
         {
             connection.On(SendCode.Message.ToString(), (Data) =>
             {
-                MSG pet = JsonNet.Deserialize<MSG>(BitConverter.ToString(Data[0].ToObject<byte[]>()));
+                ChatMessage pet = JsonNet.Deserialize<ChatMessage>(BitConverter.ToString(Data[0].ToObject<byte[]>()));
                 //TODO: send message to GUI
             });
             connection.On(SendCode.Command.ToString(), (Data) =>
