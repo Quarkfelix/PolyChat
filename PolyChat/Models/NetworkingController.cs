@@ -30,6 +30,7 @@ namespace PolyChat.Models
             Server = new SocketIOServer(new SocketIOServerOption(Port));
             Server.OnConnection((socket) => connectNewClient(socket));
             Server.Start();
+            Debug.WriteLine($"Your ip is: {ownIP}");
             Debug.WriteLine($"Server started, binding to port {Port}, waiting for connection...");
         }
 

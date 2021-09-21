@@ -5,6 +5,7 @@ using SocketIOSharp.Server.Client;
 using Json.Net;
 using System.Threading;
 using PolyChat.Models.Exceptions;
+using System.Diagnostics;
 
 namespace PolyChat.Models
 {
@@ -12,7 +13,7 @@ namespace PolyChat.Models
     {
         private SocketIOClient connection_client = null;
         private SocketIOSocket connection_server = null;
-        private Boolean connected = false;
+        private Boolean connected = true;
         private String ipSelf;
 
         public Client(SocketIOClient connection, String ip)
@@ -44,6 +45,7 @@ namespace PolyChat.Models
         {
             new Thread(() =>
             {
+                Debug.WriteLine($"connected is {connected}");
                 //create msg
                 Message msg = new Message(chatMessage, false, Controller.ip);
 
