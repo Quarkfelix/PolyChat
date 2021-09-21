@@ -13,10 +13,10 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="24"/>
         </Grid.RowDefinitions>
         <TextBox x:Name="input" KeyUp="OnKeyUp" PlaceholderText="Partner Code"/>
-        <TextBlock Grid.Row="1" x:Name="textSuccess" Text="Looking good" VerticalAlignment="Top" Foreground="{ThemeResource SystemAccentColor}" Visibility="Collapsed"/>
-        <TextBlock Grid.Row="1" x:Name="textError" Text="Invalid or empty Code" VerticalAlignment="Top" Foreground="{ThemeResource SystemErrorTextColor}" Visibility="Collapsed"/>
+        <TextBlock Grid.Row="1" x:Name="textSuccess" Text="Looking good" VerticalAlignment="Center" Foreground="{ThemeResource SystemAccentColor}" Visibility="Collapsed"/>
+        <TextBlock Grid.Row="1" x:Name="textError" Text="Invalid or empty Code" VerticalAlignment="Center" Foreground="{ThemeResource SystemErrorTextColor}" Visibility="Visible"/>
     </Grid>
 </ContentDialog>

@@ -19,16 +19,34 @@ namespace PolyChat
     {
         private NetworkingController networkingController;
         private ObservableCollection<ChatPartner> Partners;
-        private ChatPartner selectedPartner;
+        private ChatPartner selectedPartner = null;
         private string username;
         public MainPage()
         {
             this.InitializeComponent();
+            // init controller
             networkingController = new NetworkingController(this);
-
-            Partners = new ObservableCollection<ChatPartner>();
+            // ui variables
             ipAddress.Text = IP.GetCodeFromIP(networkingController.getIP().ToString());
+            Partners = new ObservableCollection<ChatPartner>();
+            updateNoChatsPlaceholder();
+            updateNoUsernamePlaceholder();
+            updateNoChatSelected();
+            updateSendButtonEnabled();
         }
+
+        public async void ShowConnectionError(string message)
+        {
+            ConnectionFailedDialog dialog = new ConnectionFailedDialog(message);
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                //retry
+            }
+            // else abort -> del chat
+        }
+
+        // EVENTS
 
         public void OnChatPartnerSelected(object sender, RoutedEventArgs e)
         {
@@ -36,6 +54,7 @@ namespace PolyChat
             selectedPartner = Partners.First(p => p.Code == code);
             listViewMessages.ItemsSource = selectedPartner.Messages;
             selectedPartnerName.Text = selectedPartner.Name;
+            updateNoChatSelected();
         }
 
         public void OnSendMessage(object sender = null, RoutedEventArgs e = null)
@@ -55,15 +74,13 @@ namespace PolyChat
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                string ip = dialog.getValue();
-                if (IP.ValidateIP(ip))
-                {
-                    networkingController.connectNewClient(ip);
-                    Partners.Add(new ChatPartner(
-                        "Connecting...",
-                        ip
-                    ));
-                }
+                string ip = IP.GetIPfromCode(dialog.getValue());
+                networkingController.connectNewClient(ip);
+                Partners.Add(new ChatPartner(
+                    "Connecting...",
+                    ip
+                ));
+                updateNoChatsPlaceholder();
             }
         }
 
@@ -77,6 +94,7 @@ namespace PolyChat
                 if (username.Length == 0) textUsername.Text = "Unknown";
                 else textUsername.Text = username;
             }
+            updateNoUsernamePlaceholder();
         }
 
         public void OnIncomingMessage(ChatMessage message)
@@ -92,14 +110,56 @@ namespace PolyChat
         private void OnDeleteChat(object sender = null, RoutedEventArgs e = null)
         {
             Partners.Remove(selectedPartner);
+            updateNoChatsPlaceholder();
         }
 
-        private void OnKeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
+        private void OnKeyUp(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
+            updateSendButtonEnabled();
             if (e.Key == Windows.System.VirtualKey.Enter)
             {
                 OnSendMessage();
             }
+        }
+
+        // UPDATE FUNCTIONS FOR UI PLACEHOLDERS
+
+        private void updateNoChatsPlaceholder()
+        {
+            textNoChats.Visibility = Partners.Count() == 0 ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void updateNoUsernamePlaceholder()
+        {
+            if (username == null)
+            {
+                textNoUsername.Visibility = Visibility.Visible;
+                textUsername.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                textNoUsername.Visibility = Visibility.Collapsed;
+                textUsername.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void updateNoChatSelected()
+        {
+            if (selectedPartner != null)
+            {
+                gridRight.Visibility = Visibility.Visible;
+                textNoChatSelected.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                gridRight.Visibility = Visibility.Collapsed;
+                textNoChatSelected.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void updateSendButtonEnabled()
+        {
+            buttonSend.IsEnabled = inputSend.Text.Length != 0;
         }
     }
 }

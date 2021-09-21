@@ -19,34 +19,36 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <!-- CONNECTION HEADER -->
-            <StackPanel HorizontalAlignment="Stretch">
-                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0 0 0 8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="56"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock x:Name="textUsername" Text="No Name" VerticalAlignment="Center"/>
-                    <Button Grid.Column="1" Click="OnOpenEditUsernameDialog" Content="Edit" HorizontalAlignment="Stretch"/>
-                </Grid>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Margin="0 0 8 0" Text="Connect to" Foreground="{ThemeResource SystemColorDisabledTextColor}"/>
-                    <TextBlock x:Name="ipAddress" Grid.Column="1"/>
-                </Grid>
-                <Border BorderThickness="1" BorderBrush="{ThemeResource AppBarBorderThemeBrush}" Margin="0 8"/>
+            <StackPanel HorizontalAlignment="Stretch" Spacing="8" Margin="0 0 0 8">
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="56"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="My Chats" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="textUsername" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="textNoUsername" Text="No Name" Foreground="{ThemeResource SystemColorDisabledTextColor}" VerticalAlignment="Center"/>
+                    <Button Grid.Column="1" Click="OnOpenEditUsernameDialog" Content="Edit" HorizontalAlignment="Stretch"/>
+                </Grid>
+                <Grid Margin="0 8 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Connect to" Foreground="{ThemeResource SystemColorDisabledTextColor}"/>
+                    <TextBlock x:Name="ipAddress" Grid.Column="1"/>
+                </Grid>
+                <Border BorderThickness="1" BorderBrush="{ThemeResource AppBarBorderThemeBrush}"/>
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="56"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="My Chats" VerticalAlignment="Center" FontSize="20"/>
                     <Button Grid.Column="1" Click="OnOpenNewChatDialog" Content="New" HorizontalAlignment="Stretch"/>
                 </Grid>
             </StackPanel>
             <!-- CHATS LIST -->
+            <TextBlock x:Name="textNoChats" Grid.Row="1" Text="No open Chats" Foreground="{ThemeResource SystemColorDisabledTextColor}" Margin="0 32 0 0" HorizontalAlignment="Center"/>
             <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
                 <ListView x:Name="listViewPartners" ItemsSource="{x:Bind Partners}" HorizontalAlignment="Stretch" Margin="0 8 0 0">
                     <ListView.ItemTemplate>
@@ -55,14 +57,14 @@
                                 <StackPanel x:Name="ChatPartner" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                         <TextBlock HorizontalAlignment="Stretch" Text="{x:Bind Name}"/>
-                                        <TextBlock Text=" ("/>
-                                        <TextBlock Text="{x:Bind Code}"/>
-                                        <TextBlock Text=")"/>
+                                        <TextBlock Foreground="{ThemeResource SystemColorDisabledTextColor}" Text=" ("/>
+                                        <TextBlock Foreground="{ThemeResource SystemColorDisabledTextColor}" Text="{x:Bind Code}"/>
+                                        <TextBlock Foreground="{ThemeResource SystemColorDisabledTextColor}" Text=")"/>
                                     </StackPanel>
                                     <!--
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                         <TextBlock HorizontalAlignment="Stretch" Text="{x:Bind Messages.Last().toString()}"/>
-                                        <TextBlock Text="{x:Bind Messages.Last().Date}"/>
+                                        <TextBlock Text="{x:Bind Message[Messages.Count()].Date}"/>
                                     </StackPanel>
                                     -->
                                 </StackPanel>
@@ -72,8 +74,9 @@
                 </ListView>
             </ScrollViewer>
         </Grid>
+        <TextBlock x:Name="textNoChatSelected" Grid.Column="1" Text="No Chat Selected" Foreground="{ThemeResource SystemColorDisabledTextColor}" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         <!-- RIGHT SIDE -->
-        <Grid Grid.Column="1">
+        <Grid x:Name="gridRight" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="64"/>
                 <RowDefinition Height="*"/>
@@ -112,9 +115,9 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="inputSend" KeyDown="OnKeyDown" PlaceholderText="My message" VerticalAlignment="Center"/>
-                <StackPanel Orientation="Horizontal" Grid.Column="1">
-                    <Button Content="Send" Click="OnSendMessage"/>
+                <TextBox x:Name="inputSend" KeyUp="OnKeyUp" PlaceholderText="My message" VerticalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="16 0 0 0">
+                    <Button x:Name="buttonSend" IsEnabled="False" Content="Send" Click="OnSendMessage" Foreground="{ThemeResource SystemColorButtonTextColor}" Background="{ThemeResource SystemAccentColor}"/>
                 </StackPanel>
             </Grid>
         </Grid>
