@@ -12,13 +12,13 @@ namespace PolyChat.Models
     /// </summary>
     public class MSG 
     {
-        public String sender = "unknown";
+        public string sender = "unknown";
         public DateTime timestamp = new DateTime(2000, 01, 01);
-        public String msg = "empty";
-        public IPAddress ip = new IPAddress(new byte[] { 49,48,46,49,46,50,49,49,46,50,54 });
+        public string msg = "empty";
+        public string ip;
 
 
-        public MSG(String sender, IPAddress ip, String msg, DateTime timestamp)
+        public MSG(string sender, string ip, String msg, DateTime timestamp)
         {
             this.sender = sender;
             this.ip = ip;

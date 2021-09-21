@@ -12,7 +12,7 @@ namespace PolyChat
 {
     public class Controller
     {
-        public static IPAddress ip;
+        public static string ip;
         private MainPage UIController;
 
         private ClientHandler clientHandler;
@@ -93,11 +93,16 @@ namespace PolyChat
             Console.WriteLine($"Message received from {socket.GetHashCode()}:{message.Data[0]}");
         }
 
-        static IPAddress[] GetIPs()
+        static string[] GetIPs()
         {
             IPHostEntry ipEntry = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress[] addr = ipEntry.AddressList;
-            return addr;
+            string[] ips = new string[addr.Length];
+            for (int i=0; i<addr.Length; i++)
+            {
+                ips[i] = addr.ToString();
+            }
+            return ips;
         }
 
     }
