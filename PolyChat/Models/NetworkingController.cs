@@ -10,6 +10,7 @@ using PolyChat.Models.Exceptions;
 using SocketIOSharp.Server;
 using SocketIOSharp.Server.Client;
 using Newtonsoft.Json.Linq;
+using System.Threading;
 
 namespace PolyChat.Models
 {
@@ -65,7 +66,7 @@ namespace PolyChat.Models
         /// <param name="msg"> to send </param>
         public void sendMessage(String ip, String msg) 
         {
-            this.getClient(ip).sendMessage(SendCode.Message, msg);
+            this.getClient(ip).sendMessage(SendCode.Initial, msg);
         }
 
         /// <summary>
