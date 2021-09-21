@@ -40,10 +40,7 @@ namespace PolyChat
 
         public void OnSendMessage(object sender = null, RoutedEventArgs e = null)
         {
-            selectedPartner.AddMessage(new ChatMessage(
-                inputSend.Text,
-                false
-            ));
+            selectedPartner.AddMessage(new Message(inputSend.Text,false));
             networkingController.sendMessage(selectedPartner.Code, inputSend.Text);
             // clear input
             inputSend.Text = "";
@@ -79,11 +76,11 @@ namespace PolyChat
             }
         }
 
-        public void OnIncomingMessage(ChatMessage message)
+        public void OnIncomingMessage(Message message)
         {
             ChatPartner sendingPartner = Partners.First(p => p.Code == message.Ip);
-            sendingPartner.AddMessage(new ChatMessage(
-                message.Content,
+            sendingPartner.AddMessage(new Message(
+                message.Msg,
                 true,
                 message.Sender
             ));
