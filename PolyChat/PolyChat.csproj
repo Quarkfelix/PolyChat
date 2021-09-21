@@ -122,7 +122,7 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\ChatMessage.cs" />
+    <Compile Include="Models\Message.cs" />
     <Compile Include="Models\ChatPartner.cs" />
     <Compile Include="Models\Exceptions\MessageTimedOutException.cs" />
     <Compile Include="Models\NetworkingController.cs" />
@@ -130,7 +130,6 @@
     <Compile Include="Models\ClientHandler.cs" />
     <Compile Include="Models\Exceptions\ConnectionFailedException.cs" />
     <Compile Include="Models\SendCode.cs" />
-    <Compile Include="Models\Socket.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\IP.cs" />

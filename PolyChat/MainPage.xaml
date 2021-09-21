@@ -99,9 +99,9 @@
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
                 <ListView x:Name="listViewMessages" VerticalAlignment="Bottom" Margin="4 16">
                     <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="models:ChatMessage">
+                        <DataTemplate x:DataType="models:Message">
                             <StackPanel x:Name="Message" Margin="0 4" Padding="16 8" CornerRadius="4" Background="{ThemeResource SystemAccentColor}">
-                                <TextBlock Text="{x:Bind Content}"/>
+                                <TextBlock Text="{x:Bind Msg}"/>
                                 <TextBlock Text="{x:Bind Timestamp.ToShortDateString()}"/>
                                 <TextBlock Text="{x:Bind Foreign}"/>
                             </StackPanel>

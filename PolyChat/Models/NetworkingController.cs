@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using SocketIOSharp.Client;
 using EngineIOSharp.Common.Enum;
 using System.Net;
 using PolyChat.Models.Exceptions;
+
+//dependencies for server functionality
+using SocketIOSharp.Server;
+using SocketIOSharp.Server.Client;
+using Newtonsoft.Json.Linq;
 
 namespace PolyChat.Models
 {
@@ -12,12 +18,19 @@ namespace PolyChat.Models
         public List<Client> clients = new List<Client>();
         private String ownName = "";
         private IPAddress ownIP;
-        MainPage uiController;
+        private readonly ushort Port;
+        private SocketIOServer Server;
+        private readonly MainPage uiController;
 
-        public NetworkingController (MainPage uiController)
+        public NetworkingController (MainPage uiController, ushort Port = 8050)
         {
             this.uiController = uiController;
-            this.ownIP = getIP();
+            this.Port = Port;
+            ownIP = getIP();
+            Server = new SocketIOServer(new SocketIOServerOption(Port));
+            Server.OnConnection((socket) => connectNewClient(socket));
+            Server.Start();
+            Debug.WriteLine($"Server started, binding to port {Port}, waiting for connection...");
         }
 
         //EXTERNAL METHODS
@@ -33,7 +46,20 @@ namespace PolyChat.Models
             connection.Connect();
             clients.Add(new Client(connection, ip));
         }
-        
+
+        /// <summary>
+        /// handle incomming connection 
+        /// </summary>
+        /// <param name="ip"> server to connect to </param>
+        private void connectNewClient(SocketIOSocket socket)
+        {
+            socket.On(SendCode.Initial.ToString(), (JToken[] Data) =>
+            {
+                Message m = new Message(Data[0]);
+                clients.Add(new Client(socket,m.Ip));
+            });
+        }
+
         /// <summary>
         /// sends Message to given ip
         /// </summary>
@@ -83,7 +109,7 @@ namespace PolyChat.Models
         //========================================================================================================================================================================================= 
 
         /// <summary>
-        /// returns client that fits to ip adress
+        /// returns client that fit to ip address
         /// </summary>
         /// <param name="ip"></param>
         /// <returns></returns>

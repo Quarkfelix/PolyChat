@@ -13,7 +13,7 @@ namespace PolyChat
     public class Controller
     {
         public static string ip;
-        private MainPage UIController;
+        private readonly MainPage UIController;
 
         private ClientHandler clientHandler;
         /*
@@ -31,7 +31,7 @@ namespace PolyChat
 
         public void sendMessage(String ip, String name, String msg)
         {
-            clientHandler.getClient(ip).sendMessage(SendCode.Message, msg, DateTime.Now);
+            clientHandler.getClient(ip).send Message(SendCode.Message, msg, DateTime.Now);
         }
         */
         /// <summary>
@@ -61,7 +61,6 @@ namespace PolyChat
                             break;
                         }
                     }
-                    Socket s = new Socket(this);
                 }
                 else if (input.Equals("client"))
                 {
@@ -72,34 +71,13 @@ namespace PolyChat
             }
         }
 
-        static void InitEventHandlers(SocketIOClient client)
-        {
-            client.On(SocketIOEvent.CONNECTION, () =>
-            {
-                Console.WriteLine("Connected!");
-                client.Emit("Message", "This is a Message Body!");
-            });
-
-            client.On(SocketIOEvent.DISCONNECT, () =>
-            {
-                Console.WriteLine();
-                Console.WriteLine("Disconnected!");
-            });
-        }
-
-
-
-        public void OnMessageCallback(SocketIOSocket socket, SocketIOAckEvent message)
-        {
-            Console.WriteLine($"Message received from {socket.GetHashCode()}:{message.Data[0]}");
-        }
 
         static string[] GetIPs()
         {
             IPHostEntry ipEntry = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress[] addr = ipEntry.AddressList;
             string[] ips = new string[addr.Length];
-            for (int i=0; i<addr.Length; i++)
+            for (int i = 0; i < addr.Length; i++)
             {
                 ips[i] = addr.ToString();
             }
