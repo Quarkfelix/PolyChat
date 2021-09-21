@@ -124,6 +124,7 @@
     </Compile>
     <Compile Include="Models\ChatMessage.cs" />
     <Compile Include="Models\ChatPartner.cs" />
+    <Compile Include="Models\Exceptions\MessageTimedOutException.cs" />
     <Compile Include="Models\NetworkingController.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\ClientHandler.cs" />

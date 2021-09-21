@@ -12,6 +12,7 @@ using Json.Net;
 using System.Net;
 using SocketIOSharp.Common.Packet;
 using System.Threading;
+using PolyChat.Models.Exceptions;
 
 namespace PolyChat.Models
 {
@@ -49,11 +50,22 @@ namespace PolyChat.Models
                 //convert msg
                 String petJson = JsonNet.Serialize(msg);
 
-                //send msg
+                //wait if not connected and send msg
+                int i=0;
+                int sleeptimer = 2000;
+                while(!this.connected)
+                {
+                    Thread.Sleep(sleeptimer);
+                    i++;
+                    if(i>=10)
+                    {
+                        throw new MessageTimedOutException(i*sleeptimer);
+                    }
+                }
                 connection.Emit(code.ToString(), petJson);
             }).Start();
         }
-
+        /*
         /// <summary>
         /// Sends Message with new name
         /// </summary>
@@ -74,6 +86,7 @@ namespace PolyChat.Models
                 connection.Emit(code.ToString(), petJson);
             }).Start();
         }
+        */
 
         //==================================================================================
         //EventHandeling
@@ -91,6 +104,7 @@ namespace PolyChat.Models
                 ChatMessage pet = JsonNet.Deserialize<ChatMessage>(BitConverter.ToString(Data[0].ToObject<byte[]>()));
                 //TODO: send message to GUI
             });
+
             connection.On(SendCode.Command.ToString(), (Data) =>
             {
                 Console.WriteLine("Command recieved!" + Data[0]);

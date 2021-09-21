@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SocketIOSharp.Client;
 using EngineIOSharp.Common.Enum;
 using System.Net;
+using PolyChat.Models.Exceptions;
 
 namespace PolyChat.Models
 {
@@ -20,7 +21,7 @@ namespace PolyChat.Models
         }
 
         //EXTERNAL METHODS
-        //=================================================================================
+        //=========================================================================================================================================================================================
 
         /// <summary>
         /// connects self to server with given ip
@@ -44,6 +45,26 @@ namespace PolyChat.Models
         }
 
         /// <summary>
+        /// returns own ip adress
+        /// </summary>
+        /// <returns></returns>
+        public IPAddress getIP()
+        {
+            IPHostEntry ipEntry = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress[] addrList = ipEntry.AddressList;
+
+            for (short i = 0; i < addrList.Length; i++)
+            {
+                if (addrList[i].ToString().Substring(0, 3).Equals("10."))
+                {
+                    return addrList[i];
+                }
+            }
+            return null;
+        }
+
+        /*
+        /// <summary>
         /// changes name of self and sends new name to all chats
         /// </summary>
         /// <param name="newName"></param>
@@ -55,11 +76,12 @@ namespace PolyChat.Models
                 cl.sendNameChange(SendCode.NameChange, newName);
             }
         }
+        */
 
-        //=================================================================================
+        //=========================================================================================================================================================================================
         //INTERNAL METHODS
-        //=================================================================================
-        
+        //========================================================================================================================================================================================= 
+
         /// <summary>
         /// returns client that fits to ip adress
         /// </summary>
@@ -72,29 +94,6 @@ namespace PolyChat.Models
                 if (cl.getIP().Equals(ip))
                 {
                     return cl;
-                }
-            }
-            return null;
-        }
-
-        private IPAddress getIP() 
-        {
-            IPHostEntry ipEntry = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress[] addrList = ipEntry.AddressList;
-
-            for (short i = 0; i < addrList.Length; i++)
-            {
-                if (addrList[i].ToString().Substring(0, 3).Equals("10."))
-                {
-                    return addrList[i];
-                    //get ip as byte array
-                    /*
-                    byte[] ba = System.Text.Encoding.ASCII.GetBytes(addrList[i].ToString());
-                    foreach (var item in ba)
-                    {
-                        Console.Write(item.ToString() + ",");
-                    }
-                    */
                 }
             }
             return null;

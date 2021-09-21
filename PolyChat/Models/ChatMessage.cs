@@ -21,8 +21,6 @@ namespace PolyChat.Models
             this.Ip = Ip;
         }
 
-        
-
         override
         public string ToString()
         {
