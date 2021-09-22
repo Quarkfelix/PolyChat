@@ -35,7 +35,7 @@ namespace PolyChat.Models
             Socket = socket;
             Socket.On(SocketIOEvent.DISCONNECT, OnDisconnect);
             Socket.On(SocketIOEvent.ERROR, (JToken[] Data) => OnError(Data));
-            Socket.On("message", (Action<JToken[]>)onMessage);
+            Socket.On("message", (Action<JToken[]>) onMessage);
 
             //we are connected if we got here, inital packet was already received
             Connected = true;

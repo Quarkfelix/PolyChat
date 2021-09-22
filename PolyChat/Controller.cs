@@ -5,6 +5,7 @@ using System.Net;
 using SocketIOSharp.Server;
 using SocketIOSharp.Server.Client;
 using PolyChat.Models;
+using System.Text.Json;
 
 namespace PolyChat
 {
@@ -50,20 +51,24 @@ namespace PolyChat
             {
                 Debug.WriteLine("--- Client connected! ---");
                 // setup event listeners
-                socket.On("initial", (JToken[] data) =>
+                socket.On("initial", async (JToken[] data) =>
                 {
                     Debug.WriteLine("--- initial packet received ---");
                     string ForeignIp = data.ToString();
                     //Todo deserialize inital packet and extract ip address
                     Connections.Add(ForeignIp, new Connection(socket, Data => OnMessage(Data)));
+                    UIController.OnIncomingConnection(ForeignIp);
                 });
             });
         }
 
-        public void SendMessage(string ip, string message)
+        public void SendMessage(string ip, string type, string content)
         {
             Debug.WriteLine("--- Controller.SendMessage ---");
-            Connections[ip].SendMessage(message);
+            Debug.WriteLine($"{type} -> {ip} content: {content}");
+            string json = $"{{ type: {type}, content: {content} }}";
+            Debug.WriteLine($"json: {json}");
+            Connections[ip].SendMessage(json);
         }
 
         private void OnMessage(JToken[] data)
@@ -72,6 +77,7 @@ namespace PolyChat
             if (data != null && data.Length > 0 && data[0] != null)
             {
                 Debug.WriteLine("Message: " + data[0]);
+                Debug.WriteLine($"DATA: {data[0].ToString()}");
             }
             else Debug.WriteLine("Undefined: " + data);
         }
