@@ -57,7 +57,7 @@ namespace PolyChat
                 socket.On("initial", async (JToken[] data) =>
                 {
                     Debug.WriteLine("--- initial packet received ---");
-                    string ForeignIp = data.ToString();
+                    string ForeignIp = data[0].ToString();
                     //Todo deserialize inital packet and extract ip address
                     Connections.Add(ForeignIp, new Connection(socket, Data => OnMessage(ForeignIp, Data)));
                     UIController.OnIncomingConnection(ForeignIp);
