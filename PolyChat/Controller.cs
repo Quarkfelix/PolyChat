@@ -33,7 +33,7 @@ namespace PolyChat
         public void Connect(string ip)
         {
             Debug.WriteLine("--- Controller.Connect ---");
-            new Connection(ip, PORT, Data => OnMessage(Data));
+            Connections.Add(ip, new Connection(ip, PORT, Data => OnMessage(Data)));
         }
 
         private void Serve()
