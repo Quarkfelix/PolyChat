@@ -36,15 +36,22 @@ namespace PolyChat
             updateSendButtonEnabled();
         }
 
-        public async void ShowConnectionError(string message)
+        public async void ShowConnectionError(string code, string message)
         {
-            ConnectionFailedDialog dialog = new ConnectionFailedDialog(message);
-            var result = await dialog.ShowAsync();
-            if (result == ContentDialogResult.Primary)
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
             {
-                //retry
-            }
-            // else abort -> del chat
+                ConnectionFailedDialog dialog = new ConnectionFailedDialog(message);
+                var result = await dialog.ShowAsync();
+                if (result == ContentDialogResult.Primary)
+                {
+                    Controller.Connect(code);
+                    Partners.Add(new ChatPartner(
+                        "Connecting...",
+                        code
+                    ));
+                    updateNoChatsPlaceholder();
+                }
+            });
         }
 
         // EVENTS
@@ -113,9 +120,21 @@ namespace PolyChat
 
         private void OnDeleteChat(object sender = null, RoutedEventArgs e = null)
         {
+            Controller.CloseChat(selectedPartner.Code);
             Partners.Remove(selectedPartner);
             updateNoChatsPlaceholder();
             updateNoChatSelected();
+        }
+
+        public async void OnChatPartnerDeleted(string code)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                Partners.Remove(Partners.First(p => p.Code == code));
+                selectedPartner = null;
+                updateNoChatsPlaceholder();
+                updateNoChatSelected();
+            });
         }
         public void OnChatPartnerSelected(object sender, RoutedEventArgs e)
         {
