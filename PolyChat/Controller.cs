@@ -3,6 +3,8 @@ using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using System.Net;
 using PolyChat.Models;
+using SocketIOSharp.Server;
+using SocketIOSharp.Server.Client;
 
 namespace PolyChat
 {
@@ -31,13 +33,31 @@ namespace PolyChat
         public void Connect(string ip)
         {
             Debug.WriteLine("--- Controller.Connect ---");
-            Connections.Add(ip, new Connection(ip, PORT, Data => OnMessage(Data)));
+            new Connection(ip, PORT, Data => OnMessage(Data));
         }
 
         private void Serve()
         {
-            Debug.WriteLine("--- Controller.Serve ---");
-            Connections.Add("unknownIP", new Connection(PORT, Data => OnMessage(Data)));
+            Debug.WriteLine("! SERVER STARTING !");
+            SocketIOServer server = new SocketIOServer(new SocketIOServerOption(
+                PORT
+            ));
+            server.Start();
+            Debug.WriteLine("Port " + server.Option.Port);
+            Debug.WriteLine("Path " + server.Option.Path);
+            // listen for connection
+            server.OnConnection((SocketIOSocket socket) =>
+            {
+                Debug.WriteLine("--- Client connected! ---");
+                // setup event listeners
+                socket.On("initial", (JToken[] data) =>
+                {
+                    Debug.WriteLine("--- initial packet received ---");
+                    string ForeignIp = data.ToString();
+                    //Todo deserialize inital packet and extract ip address
+                    Connections.Add(ForeignIp, new Connection(socket, Data => OnMessage(Data)));
+                });
+            });
         }
 
         public void SendMessage(string ip, string message)
