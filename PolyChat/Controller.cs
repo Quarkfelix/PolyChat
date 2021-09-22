@@ -59,7 +59,6 @@ namespace PolyChat
         {
             IPHostEntry ipEntry = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress[] addrList = ipEntry.AddressList;
-
             for (short i = 0; i < addrList.Length; i++)
             {
                 if (addrList[i].ToString().Substring(0, 3).Equals("10."))

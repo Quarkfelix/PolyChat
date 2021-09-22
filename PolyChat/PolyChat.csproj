@@ -124,6 +124,7 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\ChatMessage.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\ChatPartner.cs" />
     <Compile Include="Models\Exceptions\MessageTimedOutException.cs" />
@@ -192,6 +193,9 @@
     </PackageReference>
     <PackageReference Include="SocketIOSharp">
       <Version>2.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json">
+      <Version>5.0.2</Version>
     </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
