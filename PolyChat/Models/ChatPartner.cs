@@ -7,20 +7,20 @@ namespace PolyChat.Models
     {
         public string Name;
         public string Code;
-        public ObservableCollection<Message> Messages;
+        public ObservableCollection<ChatMessage> Messages;
         private SocketIOSocket socketIOSocket;
 
-        public ChatPartner(string name, string code, ObservableCollection<Message> messages = null)
+        public ChatPartner(string name, string code, ObservableCollection<ChatMessage> messages = null)
         {
             Name = name;
             Code = code;
-            if (messages == null) Messages = new ObservableCollection<Message>();
+            if (messages == null) Messages = new ObservableCollection<ChatMessage>();
             else Messages = messages;
         }
 
         public SocketIOSocket SocketIOSocket { get => socketIOSocket; set => socketIOSocket = value; }
 
-        public void AddMessage(Message message)
+        public void AddMessage(ChatMessage message)
         {
             Messages.Add(message);
         }

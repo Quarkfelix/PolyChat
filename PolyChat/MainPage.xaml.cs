@@ -50,7 +50,7 @@ namespace PolyChat
 
         public void OnSendMessage(object sender = null, RoutedEventArgs e = null)
         {
-            selectedPartner.AddMessage(new Message(inputSend.Text,false));
+            selectedPartner.AddMessage(new ChatMessage(username, "message" , inputSend.Text));
             Controller.SendMessage(selectedPartner.Code, inputSend.Text);
             // clear input
             inputSend.Text = "";
@@ -100,14 +100,10 @@ namespace PolyChat
         /// Adds an message to the UI, based on .sender if known
         /// </summary>
         /// <param name="message">ChatMessage</param>
-        public void OnIncomingMessage(Message message)
+        public void OnIncomingMessage(string origin, string json)
         {
-            ChatPartner sendingPartner = Partners.First(p => p.Code == message.Ip);
-            sendingPartner.AddMessage(new Message(
-                message.Msg,
-                true,
-                message.Sender
-            ));
+            ChatPartner sendingPartner = Partners.First(p => p.Code == origin);
+            sendingPartner.AddMessage(new ChatMessage(origin, json));
         }
 
         private void OnDeleteChat(object sender = null, RoutedEventArgs e = null)

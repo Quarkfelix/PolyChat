@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using System.Net;
+using PolyChat.Models;
 
 namespace PolyChat
 {

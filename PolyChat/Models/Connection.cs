@@ -7,7 +7,7 @@ using SocketIOSharp.Common;
 using SocketIOSharp.Server;
 using SocketIOSharp.Server.Client;
 
-namespace PolyChat
+namespace PolyChat.Models
 {
     public class Connection
     {

@@ -6,20 +6,18 @@ namespace PolyChat.Models
 {
     public class ChatMessage
     {
-        private string Origin;
-        private string Type;
-        private string Content;
-        private DateTime TimeStamp;
+        public string Origin;
+        public string Type;
+        public string Content;
+        public DateTime TimeStamp;
         public readonly bool Foreign;
         //
-        public readonly string Ip;
-
-        public ChatMessage(string content = "", string origin = "Unknown", string ip = "127.0.0.1")
+        public ChatMessage(string origin, string type, string content)
         {
             Origin = origin;
             TimeStamp = DateTime.Now;
+            Type = type;
             Content = content;
-            Ip = ip;
             // no json = my messages
             Foreign = false;
             Debug.WriteLine("Created Message: " + ToString());
