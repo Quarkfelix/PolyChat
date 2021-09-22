@@ -28,12 +28,16 @@ namespace PolyChat
             UIController = uiController;
             OwnIP = getIP();
             Serve();
+
+            //Connect("10.1.211.26"); // Marc
+            //Connect("10.1.218.90"); // Felix
+            //Connect("10.4.141.77"); // Pat
         }
 
         public void Connect(string ip)
         {
             Debug.WriteLine("--- Controller.Connect ---");
-            Connections.Add(ip, new Connection(ip, PORT, Data => OnMessage(Data)));
+            Connections.Add(ip, new Connection(ip, PORT, Data => OnMessage(ip, Data)));
         }
 
         private void Serve()
@@ -55,7 +59,7 @@ namespace PolyChat
                     Debug.WriteLine("--- initial packet received ---");
                     string ForeignIp = data.ToString();
                     //Todo deserialize inital packet and extract ip address
-                    Connections.Add(ForeignIp, new Connection(socket, Data => OnMessage(Data)));
+                    Connections.Add(ForeignIp, new Connection(socket, Data => OnMessage(ForeignIp, Data)));
                     UIController.OnIncomingConnection(ForeignIp);
                 });
             });
@@ -70,13 +74,14 @@ namespace PolyChat
             Connections[ip].SendMessage(json);
         }
 
-        private void OnMessage(JToken[] data)
+        private void OnMessage(string ip, JToken[] data)
         {
             Debug.WriteLine("--- Controller.OnMessage ---");
             if (data != null && data.Length > 0 && data[0] != null)
             {
                 Debug.WriteLine("Message: " + data[0]);
-                Debug.WriteLine($"DATA: {data[0].ToString()}");
+                Debug.WriteLine($"RAW: {data[0].ToString()}");
+                UIController.OnIncomingMessage(ip, data[0].ToString());
             }
             else Debug.WriteLine("Undefined: " + data);
         }
