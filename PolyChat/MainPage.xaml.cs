@@ -17,7 +17,7 @@ namespace PolyChat
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private NetworkingController networkingController;
+        private Controller Controller;
         private ObservableCollection<ChatPartner> Partners;
         private ChatPartner selectedPartner = null;
         private string username;
@@ -25,9 +25,9 @@ namespace PolyChat
         {
             this.InitializeComponent();
             // init controller
-            networkingController = new NetworkingController(this);
+            Controller = new Controller(this);
             // ui variables
-            ipAddress.Text = IP.GetCodeFromIP(networkingController.getIP().ToString());
+            ipAddress.Text = IP.GetCodeFromIP(Controller.getIP());
             Partners = new ObservableCollection<ChatPartner>();
             updateNoChatsPlaceholder();
             updateNoUsernamePlaceholder();
@@ -48,19 +48,10 @@ namespace PolyChat
 
         // EVENTS
 
-        public void OnChatPartnerSelected(object sender, RoutedEventArgs e)
-        {
-            string code = ((RadioButton)sender).Tag.ToString();
-            selectedPartner = Partners.First(p => p.Code == code);
-            listViewMessages.ItemsSource = selectedPartner.Messages;
-            selectedPartnerName.Text = selectedPartner.Name;
-            updateNoChatSelected();
-        }
-
         public void OnSendMessage(object sender = null, RoutedEventArgs e = null)
         {
             selectedPartner.AddMessage(new Message(inputSend.Text,false));
-            networkingController.sendMessage(selectedPartner.Code, inputSend.Text);
+            Controller.SendMessage(selectedPartner.Code, inputSend.Text);
             // clear input
             inputSend.Text = "";
         }
@@ -72,7 +63,7 @@ namespace PolyChat
             if (result == ContentDialogResult.Primary)
             {
                 string ip = IP.GetIPfromCode(dialog.getValue());
-                networkingController.connectNewClient(ip);
+                Controller.Connect(ip);
                 Partners.Add(new ChatPartner(
                     "Connecting...",
                     ip
@@ -94,6 +85,21 @@ namespace PolyChat
             updateNoUsernamePlaceholder();
         }
 
+        /// <summary>
+        /// Adds a new ChatPartner to the UI with default Name.
+        /// </summary>
+        /// <param name="ip">IP Adress, gets shown as Util.IP > Code</param>
+        public void OnIncomingConnection(string ip)
+        {
+            Partners.Add(new ChatPartner(
+                "Connecting...",
+                ip
+            ));
+        }
+        /// <summary>
+        /// Adds an message to the UI, based on .sender if known
+        /// </summary>
+        /// <param name="message">ChatMessage</param>
         public void OnIncomingMessage(Message message)
         {
             ChatPartner sendingPartner = Partners.First(p => p.Code == message.Ip);
@@ -108,6 +114,15 @@ namespace PolyChat
         {
             Partners.Remove(selectedPartner);
             updateNoChatsPlaceholder();
+            updateNoChatSelected();
+        }
+        public void OnChatPartnerSelected(object sender, RoutedEventArgs e)
+        {
+            string code = ((RadioButton)sender).Tag.ToString();
+            selectedPartner = Partners.First(p => p.Code == code);
+            listViewMessages.ItemsSource = selectedPartner.Messages;
+            selectedPartnerName.Text = selectedPartner.Name;
+            updateNoChatSelected();
         }
 
         private void OnKeyUp(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
