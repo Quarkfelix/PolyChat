@@ -4,8 +4,8 @@ using EngineIOSharp.Common.Enum;
 using Newtonsoft.Json.Linq;
 using SocketIOSharp.Client;
 using SocketIOSharp.Common;
-using SocketIOSharp.Server;
 using SocketIOSharp.Server.Client;
+using PolyChat.Models;
 
 namespace PolyChat
 {
@@ -14,10 +14,12 @@ namespace PolyChat
         private SocketIOClient Client;
         private SocketIOSocket Socket;
         private bool Connected = false;
+        private readonly string IP;
 
         public Connection(string ip, ushort port, Action<JToken[]> onMessage)
         {
             Debug.WriteLine("! CONNECTING TO SERVER !");
+            IP = ip;
             // establish connection
             Client = new SocketIOClient(new SocketIOClientOption(EngineIOScheme.http, ip, port));
             Client.Connect();
@@ -28,37 +30,15 @@ namespace PolyChat
             Client.On("message", (Action<JToken[]>) onMessage);
         }
 
-        public Connection(ushort port, Action<JToken[]> onMessage)
+        public Connection(SocketIOSocket socket, Action<JToken[]> onMessage)
         {
-            Debug.WriteLine("! SERVER STARTING !");
-            SocketIOServer server = new SocketIOServer(new SocketIOServerOption(
-                port
-            ));
-            server.Start();
-            Debug.WriteLine("Port " + server.Option.Port);
-            Debug.WriteLine("Path " + server.Option.Path);
-            // listen for connection
-            server.OnConnection((SocketIOSocket socket) =>
-            {
-                Console.WriteLine("--- Client connected! ---");
-                Socket = socket;
-                Connected = true;
-                // setup event listeners
-                Socket.On("input", (JToken[] data) =>
-                {
-                    Debug.WriteLine("--- Incoming input ---");
-                    onMessage(data);
-                    socket.Emit("echo", data);
-                });
-                Socket.On("message", (JToken[] data) =>
-                {
-                    Debug.WriteLine("--- Incoming message ---");
-                    onMessage(data);
-                    socket.Emit("echo", data);
-                });
-                Socket.On(SocketIOEvent.DISCONNECT, OnDisconnect);
-                Socket.On(SocketIOEvent.ERROR, (JToken[] Data) => OnError(Data));
-            });
+            Socket = socket;
+            Socket.On(SocketIOEvent.DISCONNECT, OnDisconnect);
+            Socket.On(SocketIOEvent.ERROR, (JToken[] Data) => OnError(Data));
+            Socket.On("message", (Action<JToken[]>)onMessage);
+
+            //we are connected if we got here, inital packet was already received
+            Connected = true;
         }
         public void SendMessage(string message)
         {
@@ -74,6 +54,8 @@ namespace PolyChat
 
         private void OnConnect()
         {
+            Debug.WriteLine("--- Sending initial packet to server ---");
+            Client.Emit("initial", IP);
             Debug.WriteLine("--- Connection successfull ---");
             Connected = true;
         }
@@ -81,6 +63,7 @@ namespace PolyChat
         {
             Debug.WriteLine("--- Disconnected! ---");
             Connected = false;
+            Close();
         }
         private void OnError(JToken[] data)
         {
@@ -90,9 +73,16 @@ namespace PolyChat
             else
                 Debug.WriteLine("Unkown Error");
             Debug.WriteLine("---");
+            Close();
         }
 
         // Getters
+
+        public void Close()
+        {
+            if (Client != null) Client.Close();
+            if (Socket != null) Socket.Close();
+        }
 
         public bool IsConnected()
         {
