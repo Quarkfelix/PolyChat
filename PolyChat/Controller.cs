@@ -6,6 +6,7 @@ using SocketIOSharp.Server;
 using SocketIOSharp.Server.Client;
 using PolyChat.Models;
 using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace PolyChat
 {
@@ -43,7 +44,7 @@ namespace PolyChat
 
         private void Serve()
         {
-            Debug.WriteLine("! SERVER STARTING !");
+            Debug.WriteLine("--- Controller.Serve ---");
             SocketIOServer server = new SocketIOServer(new SocketIOServerOption(
                 PORT
             ));
@@ -70,9 +71,12 @@ namespace PolyChat
         {
             Debug.WriteLine("--- Controller.SendMessage ---");
             Debug.WriteLine($"{type} -> {ip} content: {content}");
-            string json = $"{{ type: {type}, content: {content} }}";
-            Debug.WriteLine($"json: {json}");
-            Connections[ip].SendMessage(json);
+            JObject json = new JObject(
+                new JProperty("type", type),
+                new JProperty("content", content)
+            );
+            Debug.WriteLine($"json: {json.ToString()}");
+            Connections[ip].SendMessage(json.ToString());
         }
 
         private void OnMessage(string ip, JToken[] data)
