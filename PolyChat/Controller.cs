@@ -39,7 +39,7 @@ namespace PolyChat
         public void Connect(string ip)
         {
             Debug.WriteLine("--- Controller.Connect ---");
-            Connections.Add(ip, new Connection(ip, PORT, Data => OnMessage(ip, Data)));
+            Connections.Add(ip, new Connection(ip, PORT, Data => OnMessage(ip, Data), CloseChat));
         }
 
         private void Serve()
@@ -61,7 +61,7 @@ namespace PolyChat
                     Debug.WriteLine("--- initial packet received ---");
                     string ForeignIp = data.ToString();
                     //Todo deserialize inital packet and extract ip address
-                    Connections.Add(ForeignIp, new Connection(socket, Data => OnMessage(ForeignIp, Data)));
+                    Connections.Add(ForeignIp, new Connection(socket, Data => OnMessage(ForeignIp, Data), CloseChat));
                     UIController.OnIncomingConnection(ForeignIp);
                 });
             });
@@ -89,6 +89,15 @@ namespace PolyChat
                 UIController.OnIncomingMessage(ip, data[0].ToString());
             }
             else Debug.WriteLine("Undefined: " + data);
+        }
+
+        public void CloseChat(string IP, bool wasConnected = true)
+        {
+            Connections[IP].Close();
+            Connections.Remove(IP);
+            UIController.OnChatPartnerDeleted(IP);
+            if(!wasConnected)
+                UIController.ShowConnectionError(IP, $"Connection to {IP} failed...");
         }
 
         public string getIP()
