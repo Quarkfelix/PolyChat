@@ -5,6 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -51,7 +52,7 @@ namespace PolyChat
         public void OnSendMessage(object sender = null, RoutedEventArgs e = null)
         {
             selectedPartner.AddMessage(new ChatMessage(username, "message" , inputSend.Text));
-            Controller.SendMessage(selectedPartner.Code, inputSend.Text);
+            Controller.SendMessage(selectedPartner.Code, "message", inputSend.Text);
             // clear input
             inputSend.Text = "";
         }
@@ -89,12 +90,16 @@ namespace PolyChat
         /// Adds a new ChatPartner to the UI with default Name.
         /// </summary>
         /// <param name="ip">IP Adress, gets shown as Util.IP > Code</param>
-        public void OnIncomingConnection(string ip)
+        public async void OnIncomingConnection(string ip)
         {
-            Partners.Add(new ChatPartner(
-                "Connecting...",
-                ip
-            ));
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                Partners.Add(new ChatPartner(
+                    "Connecting...",
+                    ip
+                ));
+                updateNoChatsPlaceholder();
+            });
         }
         /// <summary>
         /// Adds an message to the UI, based on .sender if known
