@@ -23,8 +23,15 @@ namespace PolyChat.Models
             InitEventHandlers(this, connection, uiController);
         }
 
+        /// <summary>
+        /// Called when socket accepts client
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="ip"></param>
+        /// <param name="uiController"></param>
         public Client(SocketIOSocket connection, String ip, MainPage uiController)
         {
+            Debug.WriteLine("New Client Saved!!!!(Clinent[34])");
             this.ipSelf = ip;
             this.connection_server = connection;
             InitEventHandlers(this, connection, uiController);
@@ -87,7 +94,9 @@ namespace PolyChat.Models
         {
             connection.On(SendCode.Message.ToString(), (Data) =>
             {
-                Message msg = new Message(Data[0]);
+                //Message msg = new Message(Data[0]);
+                Debug.WriteLine("Normal Message Recieved!!!!");
+                Message msg = JsonNet.Deserialize<Message>(Data[0].ToString());
                 uiController.OnIncomingMessage(msg);
 
                 //TODO: send message to GUI
@@ -101,6 +110,7 @@ namespace PolyChat.Models
 
             connection.On(SocketIOEvent.CONNECTION, () =>
             {
+
                 client.connected = true;
             });
         }
@@ -114,7 +124,9 @@ namespace PolyChat.Models
         {
             connection.On(SendCode.Message.ToString(), (Data) =>
             {
-                Message msg = new Message(Data[0]);
+                Debug.WriteLine("Normal Message Recieved!!!!");
+                Message msg = JsonNet.Deserialize<Message>(Data[0].ToString());
+                //Message msg = new Message(Data[0]);
                 uiController.OnIncomingMessage(msg);
                 //TODO: send message to GUI
             });

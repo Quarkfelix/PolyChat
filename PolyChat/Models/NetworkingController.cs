@@ -11,6 +11,7 @@ using SocketIOSharp.Server;
 using SocketIOSharp.Server.Client;
 using Newtonsoft.Json.Linq;
 using System.Threading;
+using Json.Net;
 
 namespace PolyChat.Models
 {
@@ -53,9 +54,9 @@ namespace PolyChat.Models
         {
             socket.On(SendCode.Initial.ToString(), (JToken[] Data) =>
             {
-                Debug.WriteLine("Client connected!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                Message m = new Message(Data[0]);
-                clients.Add(new Client(socket,m.Ip, uiController));
+                Debug.WriteLine("Client connected and Initial Message Recieved!!!!!!!!!!!!!!!!!");
+                Message msg = JsonNet.Deserialize<Message>(Data[0].ToString());
+                clients.Add(new Client(socket,msg.Ip, uiController));
             });
         }
 
@@ -66,7 +67,7 @@ namespace PolyChat.Models
         /// <param name="msg"> to send </param>
         public void sendMessage(String ip, String msg) 
         {
-            this.getClient(ip).sendMessage(SendCode.Initial, msg);
+            this.getClient(ip).sendMessage(SendCode.Message, msg);
         }
 
         /// <summary>

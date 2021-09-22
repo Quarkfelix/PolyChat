@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Json.Net;
+using Newtonsoft.Json.Linq;
 using System;
 
 namespace PolyChat.Models
@@ -35,13 +36,19 @@ namespace PolyChat.Models
         /// <param name="data"></param>
         public Message(JToken data)
         {
-            Message m = (Message) data[0].ToObject<Message>();
+            
+            Message m = (Message) data.ToObject<Message>();
             Sender = m.Sender;
             Timestamp = m.Timestamp;
             StringTimeStamp = Timestamp.ToString();
             Msg = m.Msg;
             Ip = m.Ip;
             Foreign = m.Foreign;
+        }
+
+        public Message()
+        {
+
         }
         
 
