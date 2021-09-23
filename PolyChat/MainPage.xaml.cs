@@ -50,26 +50,27 @@ namespace PolyChat
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 Dialog dialog = new Dialog(
-                Dialog.TYPE_ERROR,
-                heading,
-                message,
-                new DialogButton(
-                    "Retry",
-                    () =>
-                    {
-                        Controller.Connect(param);
-                        Partners.Add(new ChatPartner(
-                            "Connecting...",
-                            param
-                        ));
-                        updateNoChatsPlaceholder();
-                    }
-                ),
-                new DialogButton(
-                    "Ignore",
-                    () => { /* do nothing */ }
-                )
-            );
+                    Dialog.TYPE_ERROR,
+                    heading,
+                    message,
+                    new DialogButton(
+                        "Retry",
+                        () =>
+                        {
+                            Controller.Connect(param);
+                            Partners.Add(new ChatPartner(
+                                "Connecting...",
+                                param
+                            ));
+                            updateNoChatsPlaceholder();
+                        }
+                    ),
+                    new DialogButton(
+                        "Ignore",
+                        () => { /* do nothing */ }
+                    )
+                );
+            SafelyOpenDialog(dialog);
             });
         }
 
@@ -188,7 +189,7 @@ namespace PolyChat
 
         private void OnDeleteChat(object sender = null, RoutedEventArgs e = null)
         {
-            Controller.CloseChat(selectedPartner.Code);
+            Controller.CloseChat(selectedPartner.Code,delete: true);
             Partners.Remove(selectedPartner);
             updateNoChatsPlaceholder();
             updateNoChatSelected();
