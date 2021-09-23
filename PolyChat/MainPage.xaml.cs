@@ -1,8 +1,10 @@
-﻿using PolyChat.Models;
+﻿using Newtonsoft.Json.Linq;
+using PolyChat.Models;
 using PolyChat.Util;
 using PolyChat.Views;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Core;
@@ -36,7 +38,7 @@ namespace PolyChat
             updateSendButtonEnabled();
         }
 
-        public async void ShowConnectionError(string code, string heading, string message)
+        public async void ShowConnectionError(string param, string heading, string message)
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
@@ -48,10 +50,10 @@ namespace PolyChat
                     "Retry",
                     () =>
                     {
-                        Controller.Connect(code);
+                        Controller.Connect(param);
                         Partners.Add(new ChatPartner(
                             "Connecting...",
-                            code
+                            param
                         ));
                         updateNoChatsPlaceholder();
                     }
@@ -122,10 +124,32 @@ namespace PolyChat
         /// Adds an message to the UI, based on .sender if known
         /// </summary>
         /// <param name="message">ChatMessage</param>
-        public void OnIncomingMessage(string origin, string json)
+        public async void OnIncomingMessage(string origin, string json)
         {
-            ChatPartner sendingPartner = Partners.FirstOrDefault(p => p.Code == origin);
-            sendingPartner.AddMessage(new ChatMessage(origin, json));
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                ChatPartner sendingPartner = Partners.FirstOrDefault(p => p.Code == origin);
+                sendingPartner.AddMessage(new ChatMessage(origin, json));
+            });
+        }
+        public async void OnIncomingMessages(string origin, string json)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                ChatPartner sendingPartner = Partners.FirstOrDefault(p => p.Code == origin);
+                JArray arr = JArray.Parse(json);
+                foreach (JObject item in arr)
+                {
+                    sendingPartner.AddMessage(
+                        new ChatMessage(
+                            origin,
+                            item["type"].ToString(),
+                            item["content"].ToString()//,
+                            //DateTime.Parse(item["timestamp"].ToString())
+                        )
+                    );
+                }
+            });
         }
 
         private void OnDeleteChat(object sender = null, RoutedEventArgs e = null)
