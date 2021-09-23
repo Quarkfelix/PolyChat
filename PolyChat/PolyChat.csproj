@@ -137,6 +137,7 @@
     <Compile Include="Models\ChatPartner.cs" />
     <Compile Include="Models\Exceptions\MessageTimedOutException.cs" />
     <Compile Include="Models\Exceptions\ConnectionFailedException.cs" />
+    <Compile Include="Models\FileManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\IP.cs" />
     <Compile Include="Views\Dialog.xaml.cs">
@@ -202,9 +203,6 @@
     <PackageReference Include="System.Text.Json">
       <Version>5.0.2</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="PolyChat_TemporaryKey.pfx" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

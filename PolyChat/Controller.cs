@@ -8,9 +8,11 @@ using PolyChat.Models;
 using System.IO;
 using System.Threading;
 using System;
-using System.Text.Json;
 using System.Text;
 using System.Security.Cryptography;
+using Windows.Security.Cryptography.Core;
+using Windows.Security.Cryptography;
+using Windows.Storage.Streams;
 
 namespace PolyChat
 {
@@ -37,8 +39,8 @@ namespace PolyChat
         {
             UIController = uiController;
             OwnIP = getIP();
-            //loadChats();
-            //SaveChats("10", "{das ist ein test}");
+            loadChats();
+            encode("test");
             Serve();
 
             // test
@@ -60,7 +62,7 @@ namespace PolyChat
             {
                 Connections.Add(ip, new Connection(ip, PORT, Data => OnMessage(ip, Data), CloseChat));
             }
-                
+
         }
 
         private void Serve()
@@ -79,6 +81,7 @@ namespace PolyChat
                 {
                     Debug.WriteLine("--- initial packet received ---");
                     string ForeignIp = data[0].ToString();
+
                     Debug.WriteLine($"--- this ip was in the inital packet: {ForeignIp} ---");
                     if (isInConnections(ForeignIp))
                     {
@@ -174,10 +177,13 @@ namespace PolyChat
 
         /// <summary>
         /// sends chatlogs as json array to uiController wit corrosponding ip
+        /// 
+        /// in ui when chat is clicked connection gets established
         /// </summary>
         /// <param name="ip"></param>
         public void loadChats()
         {
+            //TODO: also load chatlogs when user tries to connect
             //load dir and create if non existant
             if (Directory.Exists("U:\\PolyChat\\Saves"))
             {
@@ -206,7 +212,6 @@ namespace PolyChat
                     UIController.OnIncomingMessages(ip, jsonArr);
                 }
             }
-
         }
 
         /// <summary>
@@ -221,53 +226,55 @@ namespace PolyChat
             //writing flag setzen oder auch in der datei selbst ne flag setzen
             new Thread(() =>
             {
-                if (File.Exists($"U:\\PolyChat\\Saves\\{ip}.txt"))
+                //breaking if namechange
+                JObject obj = JObject.Parse(json);
+                if (!obj["type"].ToString().Equals("username"))
                 {
-                    Debug.WriteLine("--File allready exists--");
-                    //check for integraty of file
-                    string output = File.ReadAllText($"U:\\PolyChat\\Saves\\{ip}.txt");
-                    Debug.WriteLine($"---{output}---");
-                    if (output.Substring(0, 1).Equals("[") && output.Substring(output.Length - 1, 1).Equals("]"))
+                    //adding timestamp
+                    obj = JObject.Parse(json);
+                    obj.Add(new JProperty("timestamp", timeStamp));
+                    json = obj.ToString();
+                    if (File.Exists($"U:\\PolyChat\\Saves\\{ip}.txt"))
                     {
-                        Debug.WriteLine("--adding new chatmessage--");
-                        //structure intact
-                        JObject obj = JObject.Parse(json);
-                        //save new chat
-                        String saved = output.Substring(0, output.Length - 1);
-                        output = saved + ", " + json + " ]";
-                        File.Delete($"U:\\PolyChat\\Saves\\{ip}.txt");
-                        File.WriteAllText($"U:\\PolyChat\\Saves\\{ip}.txt", output);
+                        Debug.WriteLine("--File allready exists--");
+                        //check for integraty of file
+                        string output = File.ReadAllText($"U:\\PolyChat\\Saves\\{ip}.txt");
+                        Debug.WriteLine($"---{output}---");
+                        if (output.Substring(0, 1).Equals("[") && output.Substring(output.Length - 1, 1).Equals("]"))
+                        {
+                            Debug.WriteLine("--adding new chatmessage--");
+                            //structure intact
+                            //save new chat
+                            String saved = output.Substring(0, output.Length - 1);
+                            output = saved + ", " + json + " ]";
+                            File.Delete($"U:\\PolyChat\\Saves\\{ip}.txt");
+                            File.WriteAllText($"U:\\PolyChat\\Saves\\{ip}.txt", output);
+                        }
+                        else
+                        {
+                            Debug.WriteLine("--Structure not intact--");
+                            Debug.WriteLine("--redoing file--");
+                            //structure not intact
+                            //redo file
+                            File.Delete($"U:\\PolyChat\\Saves\\{ip}.txt");
+                            File.WriteAllText($"U:\\PolyChat\\Saves\\{ip}.txt", $"[ {json} ]");
+                        }
                     }
                     else
                     {
-                        Debug.WriteLine("--Structure not intact--");
-                        Debug.WriteLine("--redoing file--");
-                        //structure not intact
-                        //redo file
-                        File.Delete($"U:\\PolyChat\\Saves\\{ip}.txt");
+                        Debug.WriteLine("--Creating new File--");
+                        //setup file
                         File.WriteAllText($"U:\\PolyChat\\Saves\\{ip}.txt", $"[ {json} ]");
                     }
-                }
-                else
-                {
-                    Debug.WriteLine("--Creating new File--");
-                    //setup file
-                    File.WriteAllText($"U:\\PolyChat\\Saves\\{ip}.txt", $"[ {json} ]");
                 }
             }).Start();
         }
 
-        private void encode(string json) 
+        private void encode(string json)
         {
-            byte[] plaintext = Encoding.UTF8.GetBytes(json);
-            byte[] entropy = new byte[20];
-            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
-            {
-                rng.GetBytes(entropy);
-            }
-
-            /*byte[] ciphertext = ProtectedData.Protect(plaintext, entropy,
-                DataProtectionScope.CurrentUser);*/
+            String ecryptetText = FileManager.encrypt(json);
+            Debug.WriteLine(ecryptetText);
+            //Debug.WriteLine(FileManager.decrypt(ecryptetText));
         }
     }
 }

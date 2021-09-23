@@ -11,12 +11,7 @@ namespace PolyChat.Models
         public string Content;
         public DateTime TimeStamp;
         public readonly bool Foreign;
-        
 
-        public ChatMessage()
-        {
-
-        }
         /// <summary>
         /// Create own Message (directly sent)
         /// </summary>

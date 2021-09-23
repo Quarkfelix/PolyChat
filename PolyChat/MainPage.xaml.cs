@@ -7,11 +7,11 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -90,7 +90,7 @@ namespace PolyChat
                 DateTime.Now
              );
             NewChatDialog dialog = new NewChatDialog();
-            var result = await dialog.ShowAsync();
+            var result = await SafelyOpenDialog(dialog);
             if (result == ContentDialogResult.Primary)
             {
                 string ip = IP.GetIPFromCode(dialog.getValue());
@@ -106,7 +106,7 @@ namespace PolyChat
         public async void OnOpenEditUsernameDialog(object sender = null, RoutedEventArgs e = null)
         {
             EditUsernameDialog dialog = new EditUsernameDialog(username);
-            var result = await dialog.ShowAsync();
+            var result = await SafelyOpenDialog(dialog);
             if (result == ContentDialogResult.Primary)
             {
                 username = dialog.getValue();
@@ -214,6 +214,27 @@ namespace PolyChat
             {
                 OnSendMessage();
             }
+        }
+
+        public static IAsyncOperation<ContentDialogResult> SafelyOpenDialog(Dialog d)
+        {
+            if(VisualTreeHelper.GetOpenPopups(Window.Current).Count == 0)
+                return d.ShowAsync();
+            return null;
+        }
+
+        public static IAsyncOperation<ContentDialogResult> SafelyOpenDialog(NewChatDialog d)
+        {
+            if (VisualTreeHelper.GetOpenPopups(Window.Current).Count == 0)
+                return d.ShowAsync();
+            return null;
+        }
+
+        public static IAsyncOperation<ContentDialogResult> SafelyOpenDialog(EditUsernameDialog d)
+        {
+            if (VisualTreeHelper.GetOpenPopups(Window.Current).Count == 0)
+                return d.ShowAsync();
+            return null;
         }
 
         // UPDATE FUNCTIONS FOR UI PLACEHOLDERS
