@@ -156,8 +156,13 @@ namespace PolyChat
                         new ChatMessage(
                             origin,
                             item["type"].ToString(),
+<<<<<<< Updated upstream
                             item["content"].ToString()//,
                                                       //DateTime.Parse(item["timestamp"].ToString())
+=======
+                            item["content"].ToString(),
+                            DateTime.Parse(item["timestamp"].ToString())
+>>>>>>> Stashed changes
                         )
                     );
                 }

@@ -12,6 +12,11 @@ namespace PolyChat.Models
         public DateTime TimeStamp;
         public readonly bool Foreign;
         
+
+        public ChatMessage()
+        {
+
+        }
         /// <summary>
         /// Create own Message (directly sent)
         /// </summary>
@@ -43,7 +48,7 @@ namespace PolyChat.Models
             Type = type;
             Content = content;
             Foreign = foreign;
-            Debug.WriteLine("Created Loaded Message: " + ToString());
+            Debug.WriteLine("Created Loaded Message: " + ToString());            
         }
 
         override

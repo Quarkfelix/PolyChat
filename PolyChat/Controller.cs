@@ -164,6 +164,8 @@ namespace PolyChat
         /// <param name="ip"></param>
         public void loadChats()
         {
+            
+
             //load dir and create if non existant
             if (Directory.Exists("U:\\PolyChat\\Saves"))
             {
@@ -188,6 +190,7 @@ namespace PolyChat
                     ip = ip.Substring(0, ip.Length - 4);
                     Debug.WriteLine("-" + ip + "-");
                     Debug.WriteLine(jsonArr);
+                    Connect(ip);
                     UIController.OnIncomingMessages(ip, jsonArr);
                 }
             }
