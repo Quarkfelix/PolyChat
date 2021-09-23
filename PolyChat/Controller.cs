@@ -99,12 +99,13 @@ namespace PolyChat
             Debug.WriteLine($"{type} -> {ip} content: {content}");
             JObject json = new JObject(
                 new JProperty("type", type),
-                new JProperty("content", content),
-                new JProperty("timestamp", DateTime.Now.ToString())
+                new JProperty("content", content)
             );
             Debug.WriteLine($"json: {json.ToString()}");
+            // send as json
             Connections[ip].SendMessage(json.ToString());
-            SaveChats(ip, json.ToString());
+            // save to logs
+            SaveChats(ip, json.ToString(), DateTime.Now);
         }
 
         private void OnMessage(string ip, JToken[] data)
@@ -112,9 +113,10 @@ namespace PolyChat
             Debug.WriteLine("--- Controller.OnMessage ---");
             if (data != null && data.Length > 0 && data[0] != null)
             {
+                DateTime now = DateTime.Now;
                 Debug.WriteLine("RAW: " + data[0]);
-                UIController.OnIncomingMessage(ip, data[0].ToString());
-                SaveChats(ip, data[0].ToString());
+                UIController.OnIncomingMessage(ip, data[0].ToString(), now);
+                SaveChats(ip, data[0].ToString(), now);
             }
             else Debug.WriteLine("Undefined: " + data);
         }
@@ -199,10 +201,10 @@ namespace PolyChat
         /// </summary>
         /// <param name="ip"></param>
         /// <param name="json"></param>
-        public void SaveChats(String ip, String json)
+        public void SaveChats(string ip, string json, DateTime timeStamp)
         {
             //Vielleicht noch so machen dass die mit gleicher ip nacheinander gemacht
-            //werden damit es ncith zu überschreibungen kommt vielleicth auch ganz oben oder am ende ne
+            //werden damit es nicht zu überschreibungen kommt vielleicth auch ganz oben oder am ende ne
             //writing flag setzen oder auch in der datei selbst ne flag setzen
             //also save fils from myself
             new Thread(() =>
@@ -217,6 +219,7 @@ namespace PolyChat
                     {
                         Debug.WriteLine("--adding new chatmessage--");
                         //structure intact
+                        JObject obj = JObject.Parse(json);
                         //save new chat
                         String saved = output.Substring(0, output.Length - 1);
                         output = saved + ", " + json + " ]";

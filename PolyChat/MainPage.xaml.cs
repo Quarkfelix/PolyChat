@@ -125,7 +125,7 @@ namespace PolyChat
         /// Adds an message to the UI, based on .sender if known
         /// </summary>
         /// <param name="message">ChatMessage</param>
-        public async void OnIncomingMessage(string origin, string json)
+        public async void OnIncomingMessage(string origin, string json, DateTime timeStamp)
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
@@ -139,7 +139,7 @@ namespace PolyChat
                         sendingPartner.SetName(Name);
                         break;
                     default:
-                        sendingPartner.AddMessage(new ChatMessage(origin, type, content));
+                        sendingPartner.AddMessage(new ChatMessage(origin, type, content, timeStamp));
                         break;
                 }
             });
@@ -156,8 +156,8 @@ namespace PolyChat
                         new ChatMessage(
                             origin,
                             item["type"].ToString(),
-                            item["content"].ToString()//,
-                                                      //DateTime.Parse(item["timestamp"].ToString())
+                            item["content"].ToString(),
+                            DateTime.Parse(item["timestamp"].ToString())
                         )
                     );
                 }

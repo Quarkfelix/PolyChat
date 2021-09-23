@@ -33,9 +33,9 @@ namespace PolyChat.Models
         /// Create Message loaded with timestamp
         /// </summary>
         /// <param name="origin">Origin IP</param>
-        /// <param name="type">Message Type</param>
-        /// <param name="content">Message Content (not JSON)</param>
-        /// <param name="timeStamp">Message Content (not JSON)</param>
+        /// <param name="type">Message Type, usually "message"</param>
+        /// <param name="content">Message Content, usually plain text</param>
+        /// <param name="timeStamp">Parsed DateTime</param>
         public ChatMessage(string origin, string type, string content, DateTime timeStamp, bool foreign = false)
         {
             Origin = origin;
