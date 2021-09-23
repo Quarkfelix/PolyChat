@@ -26,6 +26,7 @@ namespace PolyChat
         private const ushort PORT = 8050;
         // Controller
         private readonly MainPage UIController;
+        private readonly FileManager fileManager;
         // Props
         private Dictionary<string, Connection> Connections = new Dictionary<string, Connection>();
         private string OwnName = "";
@@ -38,9 +39,9 @@ namespace PolyChat
         public Controller(MainPage uiController)
         {
             UIController = uiController;
+            fileManager = new FileManager(uiController);
             OwnIP = getIP();
-            loadChats();
-            encode("test");
+            fileManager.loadChats();
             Serve();
 
             // test
@@ -120,7 +121,7 @@ namespace PolyChat
             // send as json
             Connections[ip].SendMessage(json.ToString());
             // save to logs
-            SaveChats(ip, json.ToString(), DateTime.Now);
+            fileManager.saveChats(ip, json.ToString(), DateTime.Now);
         }
 
         private void OnMessage(string ip, JToken[] data)
@@ -131,7 +132,7 @@ namespace PolyChat
                 DateTime now = DateTime.Now;
                 Debug.WriteLine("RAW: " + data[0]);
                 UIController.OnIncomingMessage(ip, data[0].ToString(), now);
-                SaveChats(ip, data[0].ToString(), now);
+                fileManager.saveChats(ip, data[0].ToString(), now);
             }
             else Debug.WriteLine("Undefined: " + data);
         }
@@ -178,106 +179,11 @@ namespace PolyChat
             return null;
         }
 
-        /// <summary>
-        /// sends chatlogs as json array to uiController wit corrosponding ip
-        /// 
-        /// in ui when chat is clicked connection gets established
-        /// </summary>
-        /// <param name="ip"></param>
-        public void loadChats()
-        {
-            //TODO: also load chatlogs when user tries to connect
-            //load dir and create if non existant
-            if (Directory.Exists("U:\\PolyChat\\Saves"))
-            {
-                Debug.WriteLine("--Path exists.--");
-            }
-            else
-            {
-                Directory.CreateDirectory("U:\\PolyChat\\Saves");
-                Debug.WriteLine("--Path Created--.");
-            }
-
-            //go through all files and send ip and json array to ui
-            String[] filepaths = Directory.GetFiles("U:\\PolyChat\\Saves");
-            if (filepaths.Length > 0)
-            {
-                Debug.WriteLine("---Loading Saves");
-                foreach (String path in filepaths)
-                {
-                    Debug.WriteLine($"--{path}");
-                    String jsonArr = File.ReadAllText(path);
-                    String ip = Path.GetFileName(path);
-                    ip = ip.Substring(0, ip.Length - 4);
-                    Debug.WriteLine($"-{ip}");
-                    Debug.WriteLine(jsonArr);
-                    UIController.OnIncomingConnection(ip);
-                    UIController.OnIncomingMessages(ip, jsonArr);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Saves incoming chat message to 
-        /// </summary>
-        /// <param name="ip"></param>
-        /// <param name="json"></param>
-        public void SaveChats(string ip, string json, DateTime timeStamp)
-        {
-            //Vielleicht noch so machen dass die mit gleicher ip nacheinander gemacht
-            //werden damit es nicht zu überschreibungen kommt vielleicth auch ganz oben oder am ende ne
-            //writing flag setzen oder auch in der datei selbst ne flag setzen
-            new Thread(() =>
-            {
-                //breaking if namechange
-                JObject obj = JObject.Parse(json);
-                if (!obj["type"].ToString().Equals("username"))
-                {
-                    //adding timestamp
-                    obj = JObject.Parse(json);
-                    obj.Add(new JProperty("timestamp", timeStamp));
-                    json = obj.ToString();
-                    if (File.Exists($"U:\\PolyChat\\Saves\\{ip}.txt"))
-                    {
-                        Debug.WriteLine("--File allready exists--");
-                        //check for integraty of file
-                        string output = File.ReadAllText($"U:\\PolyChat\\Saves\\{ip}.txt");
-                        Debug.WriteLine($"---{output}---");
-                        if (output.Substring(0, 1).Equals("[") && output.Substring(output.Length - 1, 1).Equals("]"))
-                        {
-                            Debug.WriteLine("--adding new chatmessage--");
-                            //structure intact
-                            //save new chat
-                            String saved = output.Substring(0, output.Length - 1);
-                            output = saved + ", " + json + " ]";
-                            File.Delete($"U:\\PolyChat\\Saves\\{ip}.txt");
-                            File.WriteAllText($"U:\\PolyChat\\Saves\\{ip}.txt", output);
-                        }
-                        else
-                        {
-                            Debug.WriteLine("--Structure not intact--");
-                            Debug.WriteLine("--redoing file--");
-                            //structure not intact
-                            //redo file
-                            File.Delete($"U:\\PolyChat\\Saves\\{ip}.txt");
-                            File.WriteAllText($"U:\\PolyChat\\Saves\\{ip}.txt", $"[ {json} ]");
-                        }
-                    }
-                    else
-                    {
-                        Debug.WriteLine("--Creating new File--");
-                        //setup file
-                        File.WriteAllText($"U:\\PolyChat\\Saves\\{ip}.txt", $"[ {json} ]");
-                    }
-                }
-            }).Start();
-        }
-
         private void encode(string json)
         {
             String ecryptetText = FileManager.encrypt(json);
             Debug.WriteLine(ecryptetText);
-            //Debug.WriteLine(FileManager.decrypt(ecryptetText));
+            Debug.WriteLine(FileManager.decrypt(ecryptetText));
         }
     }
 }
