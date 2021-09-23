@@ -83,7 +83,7 @@ namespace PolyChat
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                string ip = IP.GetIPfromCode(dialog.getValue());
+                string ip = IP.GetIPFromCode(dialog.getValue());
                 Controller.Connect(ip);
                 Partners.Add(new ChatPartner(
                     "Connecting...",
