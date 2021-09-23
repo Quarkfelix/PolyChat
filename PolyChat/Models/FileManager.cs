@@ -36,7 +36,7 @@ namespace PolyChat.Models
                 {
                     foreach (String path in filepaths)
                     {
-                        if(Path.GetFileName(path).Equals(ip))
+                        if (Path.GetFileName(path).Equals(ip))
                         {
                             File.Delete(path);
                             return;
@@ -50,32 +50,15 @@ namespace PolyChat.Models
         /// loads one chatlog probably when someone tries to connect
         /// </summary>
         /// <param name="ip"></param>
-        public void loadChats()
+        public void loadChat(String ip)
         {
             //load dir and create if non existant
             if (Directory.Exists("U:\\PolyChat\\Saves"))
             {
                 Debug.WriteLine("--Path exists.--");
-            }
-            else
-            {
-                Directory.CreateDirectory("U:\\PolyChat\\Saves");
-                Debug.WriteLine("--Path Created--.");
-            }
-
-            //go through all files and send ip and json array to ui
-            String[] filepaths = Directory.GetFiles("U:\\PolyChat\\Saves");
-            if (filepaths.Length > 0)
-            {
-                Debug.WriteLine("---Loading Saves");
-                foreach (String path in filepaths)
+                if (File.Exists($"U:\\PolyChat\\Saves\\{ip}.txt"))
                 {
-                    Debug.WriteLine($"--{path}");
-                    String jsonArr = decrypt(File.ReadAllText(path));
-                    String ip = Path.GetFileName(path);
-                    ip = ip.Substring(0, ip.Length - 4);
-                    Debug.WriteLine($"-{ip}");
-                    Debug.WriteLine(jsonArr);
+                    String jsonArr = decrypt(File.ReadAllText($"U:\\PolyChat\\Saves\\{ip}.txt"));
                     UIController.OnIncomingConnection(ip);
                     UIController.OnIncomingMessages(ip, jsonArr);
                 }
@@ -180,9 +163,9 @@ namespace PolyChat.Models
         //---------------------------------------------------------------------------------------------------
         //security
         //---------------------------------------------------------------------------------------------------
-        private void genKeys() 
-        { 
-            
+        private void genKeys()
+        {
+
         }
 
 
@@ -193,7 +176,8 @@ namespace PolyChat.Models
         /// <returns></returns>
         public static String encrypt(String toEncrypt)
         {
-            try {
+            try
+            {
                 string textToEncrypt = toEncrypt;
                 string ToReturn = "";
                 string publickey = "santhosh";
@@ -214,7 +198,8 @@ namespace PolyChat.Models
                     ToReturn = Convert.ToBase64String(ms.ToArray());
                 }
                 return ToReturn;
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex.InnerException);
             }
