@@ -7,7 +7,7 @@ namespace PolyChat.Util
     {
         private const string REGEX_IP = @"^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$";
 
-        public static string GetIPfromCode(string code)
+        public static string GetIPFromCode(string code)
         {
             return code;
         }
