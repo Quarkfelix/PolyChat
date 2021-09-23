@@ -102,8 +102,12 @@ namespace PolyChat
 
         public void CloseChat(string IP, bool wasConnected = true)
         {
-            Connections[IP].Close();
-            Connections.Remove(IP);
+            Debug.WriteLine($"Deleting connection with IP:{IP}");
+            if (IP != null && Connections.ContainsKey(IP))
+            {
+                Connections[IP].Close();
+                Connections.Remove(IP);
+            }
             CloseChatUI(IP,wasConnected);
         }
 
