@@ -29,7 +29,7 @@ namespace PolyChat.Views
 
         private void OnKeyUp(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
-            if (!IP.ValidateIP(IP.GetIPfromCode(input.Text)))
+            if (!IP.ValidateIP(IP.GetIPFromCode(input.Text)))
             {
                 textSuccess.Visibility = Visibility.Collapsed;
                 textError.Visibility = Visibility.Visible;
