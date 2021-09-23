@@ -173,7 +173,7 @@ namespace PolyChat.Models
         /// <returns></returns>
         private String[] genKeys()
         {
-            return new String[] {"sehrSichererKey", "nochVielSichererKey"};
+            return new String[] {"12345678", "12345678" };
         }
         
 
