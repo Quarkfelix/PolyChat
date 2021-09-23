@@ -14,12 +14,20 @@ namespace PolyChat.Models
     class FileManager
     {
         // Controller
-        private readonly MainPage UIController;
+        private readonly Controller controller;
 
-        public FileManager(MainPage uiController)
+
+        //===============================================================================================================================================
+        //Constructor
+        //===============================================================================================================================================
+        public FileManager(Controller controller)
         {
-            UIController = uiController;
+            this.controller = controller;
         }
+
+        //===============================================================================================================================================
+        // editing save files
+        //===============================================================================================================================================
 
         /// <summary>
         /// deletes chatlog of one speciffic user
@@ -59,14 +67,13 @@ namespace PolyChat.Models
                 if (File.Exists($"U:\\PolyChat\\Saves\\{ip}.txt"))
                 {
                     String jsonArr = decrypt(File.ReadAllText($"U:\\PolyChat\\Saves\\{ip}.txt"));
-                    UIController.OnIncomingConnection(ip);
-                    UIController.OnIncomingMessages(ip, jsonArr);
+                    controller.SendIncomingMessageUI(ip, jsonArr);
                 }
             }
         }
 
         /// <summary>
-        /// sends chatlogs as json array to uiController wit corrosponding ip
+        /// sends chatlogs as json array to uiController with corrosponding ip
         /// 
         /// in ui when chat is clicked connection gets established
         /// </summary>
@@ -97,22 +104,18 @@ namespace PolyChat.Models
                     ip = ip.Substring(0, ip.Length - 4);
                     Debug.WriteLine($"-{ip}");
                     Debug.WriteLine(jsonArr);
-                    UIController.OnIncomingConnection(ip);
-                    UIController.OnIncomingMessages(ip, jsonArr);
+                    controller.SendIncomingMessageUI(ip, jsonArr);
                 }
             }
         }
 
         /// <summary>
-        /// Saves incoming chat message to 
+        /// Saves incoming chat message to U:\PolyChat\Saves\ip.txt
         /// </summary>
         /// <param name="ip"></param>
         /// <param name="json"></param>
         public void saveChats(string ip, string json, DateTime timeStamp)
         {
-            //Vielleicht noch so machen dass die mit gleicher ip nacheinander gemacht
-            //werden damit es nicht zu überschreibungen kommt vielleicth auch ganz oben oder am ende ne
-            //writing flag setzen oder auch in der datei selbst ne flag setzen
             new Thread(() =>
             {
                 //breaking if namechange
@@ -120,39 +123,39 @@ namespace PolyChat.Models
                 if (!obj["type"].ToString().Equals("username"))
                 {
                     //adding timestamp
-                    obj = JObject.Parse(json);
                     obj.Add(new JProperty("timestamp", timeStamp));
                     json = obj.ToString();
+
                     if (File.Exists($"U:\\PolyChat\\Saves\\{ip}.txt"))
                     {
                         Debug.WriteLine("--File allready exists--");
+
                         //check for integraty of file
                         string output = decrypt(File.ReadAllText($"U:\\PolyChat\\Saves\\{ip}.txt"));
                         Debug.WriteLine($"---{output}---");
                         if (output.Substring(0, 1).Equals("[") && output.Substring(output.Length - 1, 1).Equals("]"))
                         {
-                            Debug.WriteLine("--adding new chatmessage--");
                             //structure intact
                             //save new chat
-                            String saved = output.Substring(0, output.Length - 1);
-                            output = saved + ", " + json + " ]";
+                            Debug.WriteLine("--adding new chatmessage--");
+                            output = output.Substring(0, output.Length - 1) + ", " + json + " ]"; //rip appart and put file back together
                             File.Delete($"U:\\PolyChat\\Saves\\{ip}.txt");
-                            File.WriteAllText($"U:\\PolyChat\\Saves\\{ip}.txt", encrypt(output));
+                            File.WriteAllText($"U:\\PolyChat\\Saves\\{ip}.txt", encrypt(output)); //encrypt and save to textfile
                         }
                         else
                         {
-                            Debug.WriteLine("--Structure not intact--");
-                            Debug.WriteLine("--redoing file--");
                             //structure not intact
                             //redo file
+                            Debug.WriteLine("--Structure not intact--");
+                            Debug.WriteLine("--redoing file--");
                             File.Delete($"U:\\PolyChat\\Saves\\{ip}.txt");
-                            File.WriteAllText($"U:\\PolyChat\\Saves\\{ip}.txt", encrypt($"[ {json} ]"));
+                            File.WriteAllText($"U:\\PolyChat\\Saves\\{ip}.txt", encrypt($"[ {json} ]")); //encrypt and write to file
                         }
                     }
                     else
                     {
-                        Debug.WriteLine("--Creating new File--");
                         //setup file
+                        Debug.WriteLine("--Creating new File--");
                         File.WriteAllText($"U:\\PolyChat\\Saves\\{ip}.txt", encrypt($"[ {json} ]"));
                     }
                 }
@@ -160,28 +163,35 @@ namespace PolyChat.Models
         }
 
 
-        //---------------------------------------------------------------------------------------------------
-        //security
-        //---------------------------------------------------------------------------------------------------
-        private void genKeys()
+        //===============================================================================================================================================
+        // Encryption
+        //===============================================================================================================================================
+
+        /// <summary>
+        /// generates keypair [public, privte] (100% secure, trust me)
+        /// </summary>
+        /// <returns></returns>
+        private String[] genKeys()
         {
-
+            return new String[] {"sehrSichererKey", "nochVielSichererKey"};
         }
-
+        
 
         /// <summary>
         /// does exactly what it says. XD
+        /// 
+        /// encrypts given string and returns unreadable string
         /// </summary>
         /// <param name="toEncrypt"></param>
         /// <returns></returns>
-        public static String encrypt(String toEncrypt)
+        private String encrypt(String toEncrypt)
         {
             try
             {
                 string textToEncrypt = toEncrypt;
                 string ToReturn = "";
-                string publickey = "santhosh";
-                string secretkey = "engineer";
+                string publickey = genKeys()[0];
+                string secretkey = genKeys()[1];
                 byte[] secretkeyByte = { };
                 secretkeyByte = System.Text.Encoding.UTF8.GetBytes(secretkey);
                 byte[] publickeybyte = { };
@@ -203,22 +213,23 @@ namespace PolyChat.Models
             {
                 throw new Exception(ex.Message, ex.InnerException);
             }
-
         }
 
         /// <summary>
         /// does exactly what it says. XD
+        /// 
+        /// takes in unreadable string and returns infirmation
         /// </summary>
         /// <param name="toEncrypt"></param>
         /// <returns></returns>
-        public static String decrypt(String toDecrypt)
+        private String decrypt(String toDecrypt)
         {
             try
             {
                 string textToDecrypt = toDecrypt;
                 string ToReturn = "";
-                string publickey = "santhosh";
-                string privatekey = "engineer";
+                string publickey = genKeys()[0];
+                string privatekey = genKeys()[1];
                 byte[] privatekeyByte = { };
                 privatekeyByte = System.Text.Encoding.UTF8.GetBytes(privatekey);
                 byte[] publickeybyte = { };
@@ -244,10 +255,4 @@ namespace PolyChat.Models
             }
         }
     }
-
-
-
-
-
-
 }
