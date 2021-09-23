@@ -114,7 +114,7 @@ namespace PolyChat
         /// <param name="message">ChatMessage</param>
         public void OnIncomingMessage(string origin, string json)
         {
-            ChatPartner sendingPartner = Partners.First(p => p.Code == origin);
+            ChatPartner sendingPartner = Partners.FirstOrDefault(p => p.Code == origin);
             sendingPartner.AddMessage(new ChatMessage(origin, json));
         }
 
@@ -130,7 +130,7 @@ namespace PolyChat
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                Partners.Remove(Partners.First(p => p.Code == code));
+                Partners.Remove(Partners.FirstOrDefault(p => p.Code.Equals(code)));
                 selectedPartner = null;
                 updateNoChatsPlaceholder();
                 updateNoChatSelected();
@@ -139,7 +139,7 @@ namespace PolyChat
         public void OnChatPartnerSelected(object sender, RoutedEventArgs e)
         {
             string code = ((RadioButton)sender).Tag.ToString();
-            selectedPartner = Partners.First(p => p.Code == code);
+            selectedPartner = Partners.FirstOrDefault(p => p.Code == code);
             listViewMessages.ItemsSource = selectedPartner.Messages;
             selectedPartnerName.Text = selectedPartner.Name;
             updateNoChatSelected();

@@ -53,7 +53,7 @@
                 <ListView x:Name="listViewPartners" ItemsSource="{x:Bind Partners}" HorizontalAlignment="Stretch" Margin="0 8 0 0">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="models:ChatPartner">
-                            <RadioButton GroupName="chatSelect" Tag="{x:Bind Code}" HorizontalAlignment="Stretch" Height="64" Checked="OnChatPartnerSelected">
+                            <RadioButton GroupName="chatSelect" Tag="{x:Bind Code}" HorizontalAlignment="Stretch" Height="64" Click="OnChatPartnerSelected">
                                 <StackPanel x:Name="ChatPartner" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                         <TextBlock HorizontalAlignment="Stretch" Text="{x:Bind Name}"/>
