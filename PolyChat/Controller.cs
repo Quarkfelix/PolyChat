@@ -8,6 +8,8 @@ using SocketIOSharp.Server.Client;
 using System.IO;
 using System.Threading;
 using System;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace PolyChat
 {
@@ -49,7 +51,10 @@ namespace PolyChat
                 //Todo show error!
             }
             else
+            {
                 Connections.Add(ip, new Connection(ip, PORT, Data => OnMessage(ip, Data), CloseChat));
+            }
+                
         }
 
         private void Serve()
@@ -166,8 +171,6 @@ namespace PolyChat
         /// <param name="ip"></param>
         public void loadChats()
         {
-            
-
             //load dir and create if non existant
             if (Directory.Exists("U:\\PolyChat\\Saves"))
             {
@@ -183,16 +186,17 @@ namespace PolyChat
             String[] filepaths = Directory.GetFiles("U:\\PolyChat\\Saves");
             if (filepaths.Length > 0)
             {
+                Debug.WriteLine("---Loading Saves");
                 foreach (String path in filepaths)
                 {
-                    Debug.WriteLine("---Loading Saves---");
-                    Debug.WriteLine("--" + path + "--");
+                    Debug.WriteLine($"--{path}");
                     String jsonArr = File.ReadAllText(path);
                     String ip = Path.GetFileName(path);
                     ip = ip.Substring(0, ip.Length - 4);
-                    Debug.WriteLine("-" + ip + "-");
+                    Debug.WriteLine($"-{ip}");
                     Debug.WriteLine(jsonArr);
                     Connect(ip);
+                    UIController.OnIncomingConnection(ip);
                     UIController.OnIncomingMessages(ip, jsonArr);
                 }
             }
@@ -209,7 +213,6 @@ namespace PolyChat
             //Vielleicht noch so machen dass die mit gleicher ip nacheinander gemacht
             //werden damit es nicht zu überschreibungen kommt vielleicth auch ganz oben oder am ende ne
             //writing flag setzen oder auch in der datei selbst ne flag setzen
-            //also save fils from myself
             new Thread(() =>
             {
                 if (File.Exists($"U:\\PolyChat\\Saves\\{ip}.txt"))
@@ -246,6 +249,19 @@ namespace PolyChat
                     File.WriteAllText($"U:\\PolyChat\\Saves\\{ip}.txt", $"[ {json} ]");
                 }
             }).Start();
+        }
+
+        private void encode(string json) 
+        {
+            byte[] plaintext = Encoding.UTF8.GetBytes(json);
+            byte[] entropy = new byte[20];
+            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(entropy);
+            }
+
+            /*byte[] ciphertext = ProtectedData.Protect(plaintext, entropy,
+                DataProtectionScope.CurrentUser);*/
         }
     }
 }
