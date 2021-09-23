@@ -34,8 +34,6 @@ namespace PolyChat.Views
             // TODO: use event handlers and asign actions here
             Primary = primary.Action;
             Secondary = secondary.Action;
-            // show
-            MainPage.SafelyOpenDialog(this);
         }
 
         private void setType(string type, string message)

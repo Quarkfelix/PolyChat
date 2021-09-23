@@ -96,7 +96,6 @@ namespace PolyChat
                         Debug.WriteLine("---- Added new Connection ----");
                         Connections.Add(ForeignIp, new Connection(socket, Data => OnMessage(ForeignIp, Data), CloseChat));
                         UIController.OnIncomingConnection(ForeignIp);
-                        fileManager.loadChat(ForeignIp);
                     }
                 });
             });
@@ -139,7 +138,7 @@ namespace PolyChat
             else Debug.WriteLine("Undefined: " + data);
         }
 
-        public void CloseChat(string IP, bool wasConnected = true)
+        public void CloseChat(string IP, bool wasConnected = true, bool delete = false)
         {
             Debug.WriteLine($"Deleting connection with IP:{IP}");
             if (IP != null && Connections.ContainsKey(IP))
@@ -147,14 +146,18 @@ namespace PolyChat
                 Connections[IP].Close();
                 Connections.Remove(IP);
             }
-            CloseChatUI(IP, wasConnected);
+            if (delete || !wasConnected)
+                CloseChatUI(IP, wasConnected, delete);
+            if (delete)
+                fileManager.deleteChat(IP);
         }
 
-        private void CloseChatUI(string IP, bool wasConnected = true)
+        private void CloseChatUI(string IP, bool wasConnected = true, bool delete = false)
         {
             UIController.OnChatPartnerDeleted(IP);
             string heading = wasConnected ? "Connection Closed" : "Connection Failed";
-            UIController.ShowConnectionError(IP, heading, $"Connecting to {IP} failed...");
+            if(!delete)
+                UIController.ShowConnectionError(IP, heading, $"Connecting to {IP} failed...");
         }
 
         private bool isInConnections(string IP)
