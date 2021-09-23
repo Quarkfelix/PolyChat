@@ -63,6 +63,7 @@ namespace PolyChat
                 {
                     Debug.WriteLine("--- initial packet received ---");
                     string ForeignIp = data[0].ToString();
+                    Debug.WriteLine($"--- this ip was in the inital packet: {ForeignIp} ---");
                     if (isInConnections(ForeignIp))
                     {
                         Debug.WriteLine("---- We have an active connection to this client. ABORT! ----");//Todo show error!
@@ -126,7 +127,7 @@ namespace PolyChat
             return false;
         }
 
-        public string getIP()
+        public static string getIP()
         {
             IPHostEntry ipEntry = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress[] addrList = ipEntry.AddressList;

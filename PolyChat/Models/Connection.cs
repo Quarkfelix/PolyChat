@@ -58,7 +58,7 @@ namespace PolyChat.Models
         private void OnConnect()
         {
             Debug.WriteLine("--- Sending initial packet to server ---");
-            Client.Emit("initial", IP);
+            Client.Emit("initial", Controller.getIP());
             Debug.WriteLine("--- Connection successfull ---");
             Connected = true;
         }
