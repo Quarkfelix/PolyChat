@@ -82,8 +82,7 @@ namespace PolyChat
             Debug.WriteLine("--- Controller.OnMessage ---");
             if (data != null && data.Length > 0 && data[0] != null)
             {
-                Debug.WriteLine("Message: " + data[0]);
-                Debug.WriteLine($"RAW: {data[0].ToString()}");
+                Debug.WriteLine("RAW: " + data[0]);
                 UIController.OnIncomingMessage(ip, data[0].ToString());
             }
             else Debug.WriteLine("Undefined: " + data);
@@ -94,8 +93,8 @@ namespace PolyChat
             Connections[IP].Close();
             Connections.Remove(IP);
             UIController.OnChatPartnerDeleted(IP);
-            if(!wasConnected)
-                UIController.ShowConnectionError("Connection close", IP, $"Connection to {IP} failed...");
+            string heading = wasConnected ? "Connection Closed" : "Connection Failed";
+            UIController.ShowConnectionError(IP, heading, $"Connecting to {IP} failed...");
         }
 
         public string getIP()
