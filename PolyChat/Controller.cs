@@ -39,7 +39,14 @@ namespace PolyChat
         public void Connect(string ip)
         {
             Debug.WriteLine("--- Controller.Connect ---");
-            Connections.Add(ip, new Connection(ip, PORT, Data => OnMessage(ip, Data), CloseChat));
+            if (isInConnections(ip))
+            {
+                Debug.WriteLine("---- We have an active connection to this client. ABORT! ----");
+                CloseChatUI(ip);
+                //Todo show error!
+            }
+            else
+                Connections.Add(ip, new Connection(ip, PORT, Data => OnMessage(ip, Data), CloseChat));
         }
 
         private void Serve()
@@ -58,9 +65,17 @@ namespace PolyChat
                 {
                     Debug.WriteLine("--- initial packet received ---");
                     string ForeignIp = data[0].ToString();
-                    //Todo deserialize inital packet and extract ip address
-                    Connections.Add(ForeignIp, new Connection(socket, Data => OnMessage(ForeignIp, Data), CloseChat));
-                    UIController.OnIncomingConnection(ForeignIp);
+                    Debug.WriteLine($"--- this ip was in the inital packet: {ForeignIp} ---");
+                    if (isInConnections(ForeignIp))
+                    {
+                        Debug.WriteLine("---- We have an active connection to this client. ABORT! ----");//Todo show error!
+                        CloseChatUI(ForeignIp);
+                    }
+                    else
+                    {
+                        Connections.Add(ForeignIp, new Connection(socket, Data => OnMessage(ForeignIp, Data), CloseChat));
+                        UIController.OnIncomingConnection(ForeignIp);
+                    }
                 });
             });
         }
@@ -90,14 +105,30 @@ namespace PolyChat
 
         public void CloseChat(string IP, bool wasConnected = true)
         {
-            Connections[IP].Close();
-            Connections.Remove(IP);
+            Debug.WriteLine($"Deleting connection with IP:{IP}");
+            if (IP != null && Connections.ContainsKey(IP))
+            {
+                Connections[IP].Close();
+                Connections.Remove(IP);
+            }
+            CloseChatUI(IP,wasConnected);
+        }
+
+        private void CloseChatUI(string IP, bool wasConnected = true)
+        {
             UIController.OnChatPartnerDeleted(IP);
             string heading = wasConnected ? "Connection Closed" : "Connection Failed";
             UIController.ShowConnectionError(IP, heading, $"Connecting to {IP} failed...");
         }
 
-        public string getIP()
+        private bool isInConnections(string IP)
+        {
+            if(Connections.ContainsKey(IP))
+                return true;
+            return false;
+        }
+
+        public static string getIP()
         {
             IPHostEntry ipEntry = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress[] addrList = ipEntry.AddressList;
