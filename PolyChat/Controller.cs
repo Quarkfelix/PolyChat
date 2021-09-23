@@ -36,9 +36,14 @@ namespace PolyChat
         {
             UIController = uiController;
             OwnIP = getIP();
-            loadChats();
+            //loadChats();
             //SaveChats("10", "{das ist ein test}");
             Serve();
+
+            // test
+            UIController.OnIncomingConnection("1.1.1.1");
+            UIController.OnIncomingConnection("1.2.3.4");
+            UIController.OnIncomingConnection("1.2.4.8");
         }
 
         public void Connect(string ip)
@@ -69,7 +74,7 @@ namespace PolyChat
             {
                 Debug.WriteLine("--- Client connected! ---");
                 // setup event listeners
-                socket.On("initial", async (JToken[] data) =>
+                socket.On("initial", (JToken[] data) =>
                 {
                     Debug.WriteLine("--- initial packet received ---");
                     string ForeignIp = data[0].ToString();
