@@ -15,8 +15,7 @@ using Windows.Security.Cryptography;
 using Windows.Storage.Streams;
 
 namespace PolyChat
-{
-
+{ 
     // 10.1.211.26 Marc
     // 10.1.218.90 Felix
     // 10.4.141.77 Pat
@@ -37,7 +36,8 @@ namespace PolyChat
         public Controller(MainPage uiController)
         {
             UIController = uiController;
-            fileManager = new FileManager(uiController);
+            fileManager = new FileManager(this);
+            //OwnIP = getIP();
             fileManager.loadChats();
             Serve();
 
@@ -65,6 +65,9 @@ namespace PolyChat
 
         }
 
+        /// <summary>
+        /// starts server for clients to connect to
+        /// </summary>
         private void Serve()
         {
             Debug.WriteLine("--- Controller.Serve ---");
@@ -107,6 +110,12 @@ namespace PolyChat
             }
         }
 
+        /// <summary>
+        /// Sends message to given ip
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="type"></param>
+        /// <param name="content"></param>
         public void SendMessage(string ip, string type, string content)
         {
             Debug.WriteLine("--- Controller.SendMessage ---");
@@ -121,7 +130,12 @@ namespace PolyChat
             // save to logs
             fileManager.saveChats(ip, json.ToString(), DateTime.Now);
         }
-
+        
+        /// <summary>
+        /// if We recieve a message this method gets triggert
+        /// </summary>
+        /// <param name="ip">ip from sender</param>
+        /// <param name="data">String that is send</param>
         private void OnMessage(string ip, JToken[] data)
         {
             Debug.WriteLine("--- Controller.OnMessage ---");
@@ -135,6 +149,12 @@ namespace PolyChat
             else Debug.WriteLine("Undefined: " + data);
         }
 
+        /// <summary>
+        /// Closes chat connection
+        /// </summary>
+        /// <param name="IP">ip of user to be closed</param>
+        /// <param name="wasConnected"></param>
+        /// <param name="delete"></param>
         public void CloseChat(string IP, bool wasConnected = true, bool delete = false)
         {
             Debug.WriteLine($"Deleting connection with IP:{IP}");
@@ -147,6 +167,17 @@ namespace PolyChat
                 CloseChatUI(IP, wasConnected, delete);
             if (delete)
                 fileManager.deleteChat(IP);
+        }
+
+        /// <summary>
+        /// sends incoming message to ui
+        /// </summary>
+        /// <param name="ip">ip of client that send the message</param>
+        /// <param name="jsonArr">the json array that is ti be displayed in th gui</param>
+        public void SendIncomingMessageUI(String ip, String jsonArr) 
+        {
+            UIController.OnIncomingConnection(ip);
+            UIController.OnIncomingMessages(ip, jsonArr);
         }
 
         private void CloseChatUI(string IP, bool wasConnected = true, bool delete = false)
@@ -166,6 +197,10 @@ namespace PolyChat
             return Connections.ContainsKey(ip) && Connections[ip].IsConnected();
         }
 
+        /// <summary>
+        /// returns your own ip that starts with 10. becuase that is our subnet
+        /// </summary>
+        /// <returns></returns>
         public static string getIP()
         {
             IPHostEntry ipEntry = Dns.GetHostEntry(Dns.GetHostName());
@@ -180,11 +215,5 @@ namespace PolyChat
             return null;
         }
 
-        private void encode(string json)
-        {
-            String ecryptetText = FileManager.encrypt(json);
-            Debug.WriteLine(ecryptetText);
-            Debug.WriteLine(FileManager.decrypt(ecryptetText));
-        }
     }
 }
