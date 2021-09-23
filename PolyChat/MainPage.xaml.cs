@@ -26,6 +26,7 @@ namespace PolyChat
         private ObservableCollection<ChatPartner> Partners;
         private ChatPartner selectedPartner = null;
         private string username;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -80,6 +81,14 @@ namespace PolyChat
 
         public async void OnOpenNewChatDialog(object sender = null, RoutedEventArgs e = null)
         {
+            OnIncomingMessage(
+                "1.1.1.1",
+                new JObject(
+                    new JProperty("type", "username"),
+                    new JProperty("content", "Cloudflare")
+                ).ToString(),
+                DateTime.Now
+             );
             NewChatDialog dialog = new NewChatDialog();
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
@@ -138,7 +147,10 @@ namespace PolyChat
                 {
                     case "username":
                         Debug.WriteLine($"! username change for {sendingPartner.Code} -> {content}");
-                        sendingPartner.SetName(Name);
+                        sendingPartner.Name = content;
+                        int index = Partners.IndexOf(sendingPartner);
+                        Partners.Remove(sendingPartner);
+                        Partners.Insert(index, sendingPartner);
                         break;
                     default:
                         sendingPartner.AddMessage(new ChatMessage(origin, type, content, timeStamp));
@@ -159,7 +171,7 @@ namespace PolyChat
                             origin,
                             item["type"].ToString(),
                             item["content"].ToString()//,
-                            //DateTime.Parse(item["timestamp"].ToString())
+                                                      //DateTime.Parse(item["timestamp"].ToString())
                         )
                     );
                 }
