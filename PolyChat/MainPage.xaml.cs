@@ -81,6 +81,7 @@ namespace PolyChat
 
         public async void OnOpenNewChatDialog(object sender = null, RoutedEventArgs e = null)
         {
+            // test
             /*
             OnIncomingMessage(
                 "1.1.1.1",
