@@ -22,6 +22,67 @@ namespace PolyChat.Models
         }
 
         /// <summary>
+        /// deletes chatlog of one speciffic user
+        /// </summary>
+        /// <param name="ip"></param>
+        public void deleteChat(String ip)
+        {
+            if (Directory.Exists("U:\\PolyChat\\Saves"))
+            {
+                Debug.WriteLine("--Path exists.--");
+                //go through all files and send ip and json array to ui
+                String[] filepaths = Directory.GetFiles("U:\\PolyChat\\Saves");
+                if (filepaths.Length > 0)
+                {
+                    foreach (String path in filepaths)
+                    {
+                        if(Path.GetFileName(path).Equals(ip))
+                        {
+                            File.Delete(path);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// loads one chatlog probably when someone tries to connect
+        /// </summary>
+        /// <param name="ip"></param>
+        public void loadChats()
+        {
+            //load dir and create if non existant
+            if (Directory.Exists("U:\\PolyChat\\Saves"))
+            {
+                Debug.WriteLine("--Path exists.--");
+            }
+            else
+            {
+                Directory.CreateDirectory("U:\\PolyChat\\Saves");
+                Debug.WriteLine("--Path Created--.");
+            }
+
+            //go through all files and send ip and json array to ui
+            String[] filepaths = Directory.GetFiles("U:\\PolyChat\\Saves");
+            if (filepaths.Length > 0)
+            {
+                Debug.WriteLine("---Loading Saves");
+                foreach (String path in filepaths)
+                {
+                    Debug.WriteLine($"--{path}");
+                    String jsonArr = decrypt(File.ReadAllText(path));
+                    String ip = Path.GetFileName(path);
+                    ip = ip.Substring(0, ip.Length - 4);
+                    Debug.WriteLine($"-{ip}");
+                    Debug.WriteLine(jsonArr);
+                    UIController.OnIncomingConnection(ip);
+                    UIController.OnIncomingMessages(ip, jsonArr);
+                }
+            }
+        }
+
+        /// <summary>
         /// sends chatlogs as json array to uiController wit corrosponding ip
         /// 
         /// in ui when chat is clicked connection gets established

@@ -93,8 +93,10 @@ namespace PolyChat
                     }
                     else
                     {
+                        Debug.WriteLine("---- Added new Connection ----");//Todo show error!
                         Connections.Add(ForeignIp, new Connection(socket, Data => OnMessage(ForeignIp, Data), CloseChat));
                         UIController.OnIncomingConnection(ForeignIp);
+                        fileManager.loadChats(ForeignIp);
                     }
                 });
             });
