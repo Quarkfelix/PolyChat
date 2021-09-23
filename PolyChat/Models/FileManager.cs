@@ -36,7 +36,7 @@ namespace PolyChat.Models
                 {
                     foreach (String path in filepaths)
                     {
-                        if (Path.GetFileName(path).Equals(ip))
+                        if (Path.GetFileName(path).Equals(ip+".txt"))
                         {
                             File.Delete(path);
                             return;

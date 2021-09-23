@@ -15,9 +15,9 @@ namespace PolyChat.Models
         private SocketIOSocket Socket;
         private bool Connected = false;
         private readonly string IP;
-        private Action<string, bool> DeleteConnection;
+        private Action<string, bool, bool> DeleteConnection;
 
-        public Connection(string ip, ushort port, Action<JToken[]> onMessage, Action<string, bool> onClose)
+        public Connection(string ip, ushort port, Action<JToken[]> onMessage, Action<string, bool, bool> onClose)
         {
             Debug.WriteLine("! CONNECTING TO SERVER !");
             IP = ip;
@@ -32,7 +32,7 @@ namespace PolyChat.Models
             Client.On("message", (Action<JToken[]>) onMessage);
         }
         
-        public Connection(SocketIOSocket socket, Action<JToken[]> onMessage, Action<string, bool> onClose)
+        public Connection(SocketIOSocket socket, Action<JToken[]> onMessage, Action<string, bool, bool> onClose)
         {
             Socket = socket;
             DeleteConnection = onClose;
@@ -66,7 +66,7 @@ namespace PolyChat.Models
         {
             Debug.WriteLine("--- Disconnected! ---");
             Debug.WriteLine($"--- Deleting Connection with IP: {IP}---");
-            DeleteConnection(IP, IsConnected());
+            DeleteConnection(IP, IsConnected(),false);
             Connected = false;
         }
         private void OnError(JToken[] data)
