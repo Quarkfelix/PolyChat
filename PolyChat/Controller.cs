@@ -11,6 +11,9 @@ using System;
 using System.Text.Json;
 using System.Text;
 using System.Security.Cryptography;
+using Windows.Security.Cryptography.Core;
+using Windows.Security.Cryptography;
+using Windows.Storage.Streams;
 
 namespace PolyChat
 {
@@ -37,6 +40,8 @@ namespace PolyChat
         {
             UIController = uiController;
             OwnIP = getIP();
+            loadChats();
+            encode("test");
             Serve();
         }
 
@@ -168,6 +173,8 @@ namespace PolyChat
 
         /// <summary>
         /// sends chatlogs as json array to uiController wit corrosponding ip
+        /// 
+        /// in ui when chat is clicked connection gets established
         /// </summary>
         /// <param name="ip"></param>
         public void loadChats()
@@ -203,41 +210,6 @@ namespace PolyChat
             }
         }
 
-        /*
-        public void loadChat(String ip)
-        {
-            //TODO: also load chatlogs when user tries to connect
-            //load dir and create if non existant
-            if (Directory.Exists("U:\\PolyChat\\Saves"))
-            {
-                Debug.WriteLine("--Path exists.--");
-            }
-            else
-            {
-                Directory.CreateDirectory("U:\\PolyChat\\Saves");
-                Debug.WriteLine("--Path Created--.");
-            }
-
-            //go through all files and send ip and json array to ui
-            String[] filepaths = Directory.GetFiles("U:\\PolyChat\\Saves");
-            if (filepaths.Length > 0)
-            {
-                Debug.WriteLine("---Loading Saves");
-                foreach (String path in filepaths)
-                {
-                    Debug.WriteLine($"--{path}");
-                    String jsonArr = File.ReadAllText(path);
-                    String ip = Path.GetFileName(path);
-                    ip = ip.Substring(0, ip.Length - 4);
-                    Debug.WriteLine($"-{ip}");
-                    Debug.WriteLine(jsonArr);
-                    Connect(ip);
-                    UIController.OnIncomingConnection(ip);
-                    UIController.OnIncomingMessages(ip, jsonArr);
-                }
-            }
-        }
-        */
         /// <summary>
         /// Saves incoming chat message to 
         /// </summary>
@@ -296,13 +268,9 @@ namespace PolyChat
 
         private void encode(string json)
         {
-            byte[] plaintext = Encoding.UTF8.GetBytes(json);
-            byte[] entropy = new byte[20];
-            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
-            {
-                rng.GetBytes(entropy);
-            }
-
+            String ecryptetText = FileManager.encrypt(json);
+            Debug.WriteLine(ecryptetText);
+            //Debug.WriteLine(FileManager.decrypt(ecryptetText));
         }
     }
 }
