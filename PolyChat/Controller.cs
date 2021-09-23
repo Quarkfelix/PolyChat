@@ -44,9 +44,11 @@ namespace PolyChat
             Serve();
 
             // test
+            /*
             UIController.OnIncomingConnection("1.1.1.1");
             UIController.OnIncomingConnection("1.2.3.4");
             UIController.OnIncomingConnection("1.2.4.8");
+            */
         }
 
         public void Connect(string ip)
