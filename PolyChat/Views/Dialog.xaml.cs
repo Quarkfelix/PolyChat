@@ -3,6 +3,7 @@ using PolyChat.Util;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Popups;
@@ -34,7 +35,7 @@ namespace PolyChat.Views
             Primary = primary.Action;
             Secondary = secondary.Action;
             // show
-            ShowDialogAsync();
+            MainPage.SafelyOpenDialog(this);
         }
 
         private void setType(string type, string message)
