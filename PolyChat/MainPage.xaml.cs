@@ -6,6 +6,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -99,8 +100,8 @@ namespace PolyChat
             if (result == ContentDialogResult.Primary)
             {
                 username = dialog.getValue();
-                if (username.Length == 0) textUsername.Text = "Unknown";
-                else textUsername.Text = username;
+                textUsername.Text = username;
+                Controller.SendBroadcastMessage("username", username);
             }
             updateNoUsernamePlaceholder();
         }
@@ -128,8 +129,19 @@ namespace PolyChat
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
+                var doc = JsonDocument.Parse(json).RootElement;
+                string type = doc.GetProperty("type").GetString();
+                string content = doc.GetProperty("content").GetString();
                 ChatPartner sendingPartner = Partners.FirstOrDefault(p => p.Code == origin);
-                sendingPartner.AddMessage(new ChatMessage(origin, json));
+                switch (type)
+                {
+                    case "username":
+                        sendingPartner.SetName(Name);
+                        break;
+                    default:
+                        sendingPartner.AddMessage(new ChatMessage(origin, type, content));
+                        break;
+                }
             });
         }
         public async void OnIncomingMessages(string origin, string json)
@@ -145,7 +157,7 @@ namespace PolyChat
                             origin,
                             item["type"].ToString(),
                             item["content"].ToString()//,
-                            //DateTime.Parse(item["timestamp"].ToString())
+                                                      //DateTime.Parse(item["timestamp"].ToString())
                         )
                     );
                 }

@@ -24,7 +24,7 @@ namespace PolyChat.Models
             TimeStamp = DateTime.Now;
             Type = type;
             Content = content;
-            // no json = my messages
+            // TODO
             Foreign = false;
             Debug.WriteLine("Created Message: " + ToString());
         }
@@ -44,24 +44,6 @@ namespace PolyChat.Models
             Content = content;
             Foreign = foreign;
             Debug.WriteLine("Created Loaded Message: " + ToString());
-        }
-
-        /// <summary>
-        /// Create foreign Message (directly incoming)
-        /// </summary>
-        /// <param name="origin">Foreign IP</param>
-        /// <param name="json">Message Content as JSON with type and content</param>
-        public ChatMessage(string origin, string json)
-        {
-            Origin = origin;
-            // parse and save to object
-            var obj = JsonDocument.Parse(json).RootElement;
-            Type = obj.GetProperty("type").GetString();
-            Content = obj.GetProperty("content").GetString();
-            TimeStamp = DateTime.Now;
-            // json = foreign
-            Foreign = true;
-            Debug.WriteLine("Created Message: " + ToString());
         }
 
         override

@@ -24,5 +24,10 @@ namespace PolyChat.Models
         {
             Messages.Add(message);
         }
+
+        public void SetName(string name)
+        {
+            Name = name;
+        }
     }
 }
