@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:PolyChat.Models"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Dark">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="224"/>
@@ -97,13 +97,13 @@
             </Grid>
             <!-- CHAT -->
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
-                <ListView x:Name="listViewMessages" VerticalAlignment="Bottom" Margin="4 16">
+                <ListView x:Name="listViewMessages" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="4 16">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="models:ChatMessage">
-                            <StackPanel x:Name="Message" Margin="0 4" Padding="16 8" CornerRadius="4" Background="{ThemeResource SystemAccentColor}">
-                                <TextBlock Text="{x:Bind Content}"/>
-                                <TextBlock Text="{x:Bind TimeStamp.ToShortDateString()}"/>
-                                <TextBlock Text="{x:Bind Foreign}"/>
+                            <StackPanel x:Name="Message" MaxWidth="320" Margin="0 4" Padding="16 8" CornerRadius="4" Background="{ThemeResource SystemAccentColor}">
+                                <TextBlock Text="{x:Bind Content}" Foreground="{ThemeResource SystemAltHighColor}" TextWrapping="WrapWholeWords" FontSize="14"/>
+                                <TextBlock Text="{x:Bind TimeStamp.ToString()}" Foreground="{ThemeResource SystemAltMediumColor}"/>
+                                <TextBlock Text="{x:Bind Foreign}" Foreground="{ThemeResource SystemAltMediumLowColor}" FontStyle="Italic" />
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
