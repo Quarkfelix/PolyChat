@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -136,6 +137,7 @@ namespace PolyChat
                 switch (type)
                 {
                     case "username":
+                        Debug.WriteLine($"! username change for {sendingPartner.Code} -> {content}");
                         sendingPartner.SetName(Name);
                         break;
                     default:
@@ -156,8 +158,8 @@ namespace PolyChat
                         new ChatMessage(
                             origin,
                             item["type"].ToString(),
-                            item["content"].ToString(),
-                            DateTime.Parse(item["timestamp"].ToString())
+                            item["content"].ToString()//,
+                            //DateTime.Parse(item["timestamp"].ToString())
                         )
                     );
                 }
@@ -190,6 +192,7 @@ namespace PolyChat
             listViewMessages.ItemsSource = selectedPartner.Messages;
             selectedPartnerName.Text = selectedPartner.Name;
             updateNoChatSelected();
+            if (!Controller.IsConnected(code)) Controller.Connect(code);
         }
 
         private void OnKeyUp(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
