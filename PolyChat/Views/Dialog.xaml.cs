@@ -36,6 +36,7 @@ namespace PolyChat.Views
             Secondary = secondary.Action;
             // show
             MainPage.SafelyOpenDialog(this);
+            RequestedTheme = MainPage.GetTheme();
         }
 
         private void setType(string type, string message)

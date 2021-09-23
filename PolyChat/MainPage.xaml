@@ -6,17 +6,18 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:PolyChat.Models"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Dark">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="224"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <!-- LEFT SIDE -->
-        <Grid Grid.Column="0" Margin="16">
+        <Grid Grid.Column="0" Padding="16" Background="{ThemeResource SystemChromeMediumColor}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <!-- CONNECTION HEADER -->
             <StackPanel HorizontalAlignment="Stretch" Spacing="8" Margin="0 0 0 8">
@@ -37,7 +38,7 @@
                     <TextBlock Text="Connect to" Foreground="{ThemeResource SystemColorDisabledTextColor}"/>
                     <TextBlock x:Name="ipAddress" Grid.Column="1"/>
                 </Grid>
-                <Border BorderThickness="1" BorderBrush="{ThemeResource AppBarBorderThemeBrush}"/>
+                <Border BorderThickness="1" BorderBrush="{ThemeResource SystemControlBackgroundListLowBrush}"/>
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -55,12 +56,8 @@
                         <DataTemplate x:DataType="models:ChatPartner">
                             <RadioButton GroupName="chatSelect" Tag="{x:Bind Code}" HorizontalAlignment="Stretch" Height="64" Click="OnChatPartnerSelected">
                                 <StackPanel x:Name="ChatPartner" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                        <TextBlock HorizontalAlignment="Stretch" Text="{x:Bind Name}"/>
-                                        <TextBlock Foreground="{ThemeResource SystemColorDisabledTextColor}" Text=" ("/>
-                                        <TextBlock Foreground="{ThemeResource SystemColorDisabledTextColor}" Text="{x:Bind Code}"/>
-                                        <TextBlock Foreground="{ThemeResource SystemColorDisabledTextColor}" Text=")"/>
-                                    </StackPanel>
+                                    <TextBlock HorizontalAlignment="Stretch" Text="{x:Bind Name}"/>
+                                    <TextBlock Foreground="{ThemeResource SystemColorDisabledTextColor}" Text="{x:Bind Code}"/>
                                     <!--
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                         <TextBlock HorizontalAlignment="Stretch" Text="{x:Bind Messages.Last().toString()}"/>
@@ -73,6 +70,7 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </ScrollViewer>
+            <Button Grid.Row="2" Click="OnToggleTheme" Content="Toggle Theme"/>
         </Grid>
         <TextBlock x:Name="textNoChatSelected" Grid.Column="1" Text="No Chat Selected" Foreground="{ThemeResource SystemColorDisabledTextColor}" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         <!-- RIGHT SIDE -->
