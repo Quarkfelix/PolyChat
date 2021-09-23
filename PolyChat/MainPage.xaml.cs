@@ -213,29 +213,15 @@ namespace PolyChat
         private void OnKeyUp(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
             updateSendButtonEnabled();
-            if (e.Key == Windows.System.VirtualKey.Enter)
+            if (buttonSend.IsEnabled && e.Key == Windows.System.VirtualKey.Enter)
             {
                 OnSendMessage();
             }
         }
 
-        public static IAsyncOperation<ContentDialogResult> SafelyOpenDialog(Dialog d)
+        public static IAsyncOperation<ContentDialogResult> SafelyOpenDialog(ContentDialog d)
         {
             if(VisualTreeHelper.GetOpenPopups(Window.Current).Count == 0)
-                return d.ShowAsync();
-            return null;
-        }
-
-        public static IAsyncOperation<ContentDialogResult> SafelyOpenDialog(NewChatDialog d)
-        {
-            if (VisualTreeHelper.GetOpenPopups(Window.Current).Count == 0)
-                return d.ShowAsync();
-            return null;
-        }
-
-        public static IAsyncOperation<ContentDialogResult> SafelyOpenDialog(EditUsernameDialog d)
-        {
-            if (VisualTreeHelper.GetOpenPopups(Window.Current).Count == 0)
                 return d.ShowAsync();
             return null;
         }
