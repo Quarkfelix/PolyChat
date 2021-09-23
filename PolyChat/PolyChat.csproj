@@ -119,6 +119,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\DialogButton.cs" />
     <Compile Include="Models\Connection.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -130,8 +131,8 @@
     <Compile Include="Models\Exceptions\ConnectionFailedException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\IP.cs" />
-    <Compile Include="Views\ConnectionFailedDialog.xaml.cs">
-      <DependentUpon>ConnectionFailedDialog.xaml</DependentUpon>
+    <Compile Include="Views\Dialog.xaml.cs">
+      <DependentUpon>Dialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditUsernameDialog.xaml.cs">
       <DependentUpon>EditUsernameDialog.xaml</DependentUpon>
@@ -164,7 +165,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ConnectionFailedDialog.xaml">
+    <Page Include="Views\Dialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
