@@ -34,6 +34,7 @@ namespace PolyChat.Views
             // TODO: use event handlers and asign actions here
             Primary = primary.Action;
             Secondary = secondary.Action;
+            RequestedTheme = MainPage.GetTheme();
         }
 
         private void setType(string type, string message)

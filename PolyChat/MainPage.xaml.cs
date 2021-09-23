@@ -26,7 +26,8 @@ namespace PolyChat
         private ObservableCollection<ChatPartner> Partners;
         private ChatPartner selectedPartner = null;
         private string username;
-
+        private static ElementTheme Theme = ElementTheme.Light;
+        
         public MainPage()
         {
             this.InitializeComponent();
@@ -35,6 +36,9 @@ namespace PolyChat
             // ui variables
             ipAddress.Text = IP.GetCodeFromIP(Controller.getIP());
             Partners = new ObservableCollection<ChatPartner>();
+            // theming
+            RequestedTheme = Theme;
+            // updated placeholder
             updateNoChatsPlaceholder();
             updateNoUsernamePlaceholder();
             updateNoChatSelected();
@@ -74,7 +78,7 @@ namespace PolyChat
 
         public void OnSendMessage(object sender = null, RoutedEventArgs e = null)
         {
-            selectedPartner.AddMessage(new ChatMessage(username, "message", inputSend.Text));
+            selectedPartner.AddMessage(new ChatMessage(username, "message", inputSend.Text, DateTime.Now, false));
             Controller.SendMessage(selectedPartner.Code, "message", inputSend.Text);
             // clear input
             inputSend.Text = "";
@@ -159,7 +163,7 @@ namespace PolyChat
                         Partners.Insert(index, sendingPartner);
                         break;
                     default:
-                        sendingPartner.AddMessage(new ChatMessage(origin, type, content, timeStamp));
+                        sendingPartner.AddMessage(new ChatMessage(origin, type, content, timeStamp, true));
                         break;
                 }
             });
@@ -176,14 +180,14 @@ namespace PolyChat
                         new ChatMessage(
                             origin,
                             item["type"].ToString(),
-                            item["content"].ToString()//,
-                                                      //DateTime.Parse(item["timestamp"].ToString())
+                            item["content"].ToString(),
+                            DateTime.Parse(item["timestamp"].ToString()),
+                            false // TODO: FIX !!!!
                         )
                     );
                 }
             });
         }
-
 
         private void OnDeleteChat(object sender = null, RoutedEventArgs e = null)
         {
@@ -213,35 +217,31 @@ namespace PolyChat
             if (!Controller.IsConnected(code)) Controller.Connect(code);
         }
 
+        public void OnToggleTheme(object sender, RoutedEventArgs e)
+        {
+            Theme = Theme == ElementTheme.Light ? ElementTheme.Dark : ElementTheme.Light;
+            RequestedTheme = Theme;
+        }
+
         private void OnKeyUp(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
             updateSendButtonEnabled();
-            if (e.Key == Windows.System.VirtualKey.Enter)
+            if (buttonSend.IsEnabled && e.Key == Windows.System.VirtualKey.Enter)
             {
                 OnSendMessage();
             }
         }
 
-        public static IAsyncOperation<ContentDialogResult> SafelyOpenDialog(Dialog d)
+        public static IAsyncOperation<ContentDialogResult> SafelyOpenDialog(ContentDialog d)
         {
             if(VisualTreeHelper.GetOpenPopups(Window.Current).Count == 0)
                 return d.ShowAsync();
             return null;
         }
 
-        public static IAsyncOperation<ContentDialogResult> SafelyOpenDialog(NewChatDialog d)
-        {
-            if (VisualTreeHelper.GetOpenPopups(Window.Current).Count == 0)
-                return d.ShowAsync();
-            return null;
-        }
+        // GETTERS
 
-        public static IAsyncOperation<ContentDialogResult> SafelyOpenDialog(EditUsernameDialog d)
-        {
-            if (VisualTreeHelper.GetOpenPopups(Window.Current).Count == 0)
-                return d.ShowAsync();
-            return null;
-        }
+        public static ElementTheme GetTheme() => Theme;
 
         // UPDATE FUNCTIONS FOR UI PLACEHOLDERS
 
