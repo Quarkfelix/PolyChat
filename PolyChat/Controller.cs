@@ -78,6 +78,15 @@ namespace PolyChat
             });
         }
 
+        public void SendBroadcastMessage(string type, string content)
+        {
+            Debug.WriteLine("--- Controller.Broadcast ---");
+            foreach (KeyValuePair<string, Connection> entry in Connections)
+            {
+                SendMessage(entry.Key, type, content);
+            }
+        }
+
         public void SendMessage(string ip, string type, string content)
         {
             Debug.WriteLine("--- Controller.SendMessage ---");
@@ -109,7 +118,7 @@ namespace PolyChat
                 Connections[IP].Close();
                 Connections.Remove(IP);
             }
-            CloseChatUI(IP,wasConnected);
+            CloseChatUI(IP, wasConnected);
         }
 
         private void CloseChatUI(string IP, bool wasConnected = true)
@@ -122,7 +131,7 @@ namespace PolyChat
 
         private bool isInConnections(string IP)
         {
-            if(Connections.ContainsKey(IP))
+            if (Connections.ContainsKey(IP))
                 return true;
             return false;
         }
