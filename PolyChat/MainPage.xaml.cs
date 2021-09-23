@@ -28,7 +28,6 @@ namespace PolyChat
         private string username;
         private static ElementTheme Theme = ElementTheme.Light;
         
-
         public MainPage()
         {
             this.InitializeComponent();
@@ -78,7 +77,7 @@ namespace PolyChat
 
         public void OnSendMessage(object sender = null, RoutedEventArgs e = null)
         {
-            selectedPartner.AddMessage(new ChatMessage(username, "message", inputSend.Text));
+            selectedPartner.AddMessage(new ChatMessage(username, "message", inputSend.Text, DateTime.Now, false));
             Controller.SendMessage(selectedPartner.Code, "message", inputSend.Text);
             // clear input
             inputSend.Text = "";
@@ -161,7 +160,7 @@ namespace PolyChat
                         Partners.Insert(index, sendingPartner);
                         break;
                     default:
-                        sendingPartner.AddMessage(new ChatMessage(origin, type, content, timeStamp));
+                        sendingPartner.AddMessage(new ChatMessage(origin, type, content, timeStamp, true));
                         break;
                 }
             });
@@ -178,8 +177,9 @@ namespace PolyChat
                         new ChatMessage(
                             origin,
                             item["type"].ToString(),
-                            item["content"].ToString()//,
-                                                      //DateTime.Parse(item["timestamp"].ToString())
+                            item["content"].ToString(),
+                            DateTime.Parse(item["timestamp"].ToString()),
+                            false // TODO: FIX !!!!
                         )
                     );
                 }
