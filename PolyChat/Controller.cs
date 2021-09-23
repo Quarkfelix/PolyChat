@@ -145,9 +145,11 @@ namespace PolyChat
 
         private bool isInConnections(string IP)
         {
-            if (Connections.ContainsKey(IP))
-                return true;
-            return false;
+            return Connections.ContainsKey(IP);
+        }
+        public bool IsConnected(string ip)
+        {
+            return Connections.ContainsKey(ip) && Connections[ip].IsConnected();
         }
 
         public static string getIP()
@@ -195,7 +197,6 @@ namespace PolyChat
                     ip = ip.Substring(0, ip.Length - 4);
                     Debug.WriteLine($"-{ip}");
                     Debug.WriteLine(jsonArr);
-                    Connect(ip);
                     UIController.OnIncomingConnection(ip);
                     UIController.OnIncomingMessages(ip, jsonArr);
                 }
