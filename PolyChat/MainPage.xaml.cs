@@ -99,7 +99,9 @@ namespace PolyChat
             {
                 string ip = IP.GetIPFromCode(dialog.getValue());
                 Controller.Connect(ip);
-                Partners.Add(new ChatPartner(
+                ChatPartner pa = Partners.FirstOrDefault(p => p.Code == ip);
+                if (pa == null)
+                    Partners.Add(new ChatPartner(
                     "Connecting...",
                     ip
                 ));
