@@ -171,7 +171,11 @@ namespace PolyChat
                             origin,
                             item["type"].ToString(),
                             item["content"].ToString()//,
+<<<<<<< HEAD
                                                       //DateTime.Parse(item["timestamp"].ToString())
+=======
+                            //DateTime.Parse(item["timestamp"].ToString())
+>>>>>>> be4eada (stuff)
                         )
                     );
                 }
