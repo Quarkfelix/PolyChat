@@ -29,8 +29,6 @@ namespace PolyChat
         private readonly FileManager fileManager;
         // Props
         private Dictionary<string, Connection> Connections = new Dictionary<string, Connection>();
-        private string OwnName = "";
-        private string OwnIP;
 
         /// <summary>
         /// Initializes Controller with UI access
@@ -40,7 +38,6 @@ namespace PolyChat
         {
             UIController = uiController;
             fileManager = new FileManager(uiController);
-            OwnIP = getIP();
             fileManager.loadChats();
             Serve();
 
