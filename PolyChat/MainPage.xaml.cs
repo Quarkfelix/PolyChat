@@ -156,8 +156,8 @@ namespace PolyChat
                         new ChatMessage(
                             origin,
                             item["type"].ToString(),
-                            item["content"].ToString(),
-                            DateTime.Parse(item["timestamp"].ToString())
+                            item["content"].ToString()//,
+                            //DateTime.Parse(item["timestamp"].ToString())
                         )
                     );
                 }
