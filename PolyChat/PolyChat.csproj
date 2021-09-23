@@ -137,6 +137,7 @@
     <Compile Include="Models\ChatPartner.cs" />
     <Compile Include="Models\Exceptions\MessageTimedOutException.cs" />
     <Compile Include="Models\Exceptions\ConnectionFailedException.cs" />
+    <Compile Include="Models\FileManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\IP.cs" />
     <Compile Include="Views\Dialog.xaml.cs">
