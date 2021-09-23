@@ -96,13 +96,16 @@
             <!-- CHAT -->
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
                 <ListView x:Name="listViewMessages" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="4 16">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="models:ChatMessage">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                <StackPanel HorizontalAlignment="{x:Bind Align}" x:Name="Message" MaxWidth="320" Margin="0 4" Padding="16 8" CornerRadius="4" Background="{ThemeResource SystemAccentColor}">
-                                     <TextBlock Text="{x:Bind Content}" Foreground="{ThemeResource SystemAltHighColor}" TextWrapping="WrapWholeWords" FontSize="14"/>
-                                     <TextBlock Text="{x:Bind TimeStamp.ToString()}" Foreground="{ThemeResource SystemAltMediumColor}"/>
-                                </StackPanel>
+                            <StackPanel HorizontalAlignment="{x:Bind Align}" x:Name="Message" MaxWidth="320" Margin="0 4" Padding="16 8" CornerRadius="4" Background="{ThemeResource SystemAccentColor}">
+                                    <TextBlock Text="{x:Bind Content}" Foreground="{ThemeResource SystemAltHighColor}" TextWrapping="WrapWholeWords" FontSize="14"/>
+                                    <TextBlock Text="{x:Bind TimeStamp.ToString()}" Foreground="{ThemeResource SystemAltMediumColor}"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>

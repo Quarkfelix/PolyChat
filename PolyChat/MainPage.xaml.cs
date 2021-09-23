@@ -87,16 +87,16 @@ namespace PolyChat
         public async void OnOpenNewChatDialog(object sender = null, RoutedEventArgs e = null)
         {
             // test
-            /*
+            /**/
             OnIncomingMessage(
-                "1.1.1.1",
+                "localhost",
                 new JObject(
-                    new JProperty("type", "username"),
-                    new JProperty("content", "Cloudflare")
+                    new JProperty("type", "message"),
+                    new JProperty("content", "Test")
                 ).ToString(),
                 DateTime.Now
              );
-            */
+            /**/
             NewChatDialog dialog = new NewChatDialog();
             var result = await SafelyOpenDialog(dialog);
             if (result == ContentDialogResult.Primary)
