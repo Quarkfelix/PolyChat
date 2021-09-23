@@ -152,6 +152,7 @@ namespace PolyChat
             });
         }
 
+
         private void OnDeleteChat(object sender = null, RoutedEventArgs e = null)
         {
             Controller.CloseChat(selectedPartner.Code);
