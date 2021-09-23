@@ -92,5 +92,10 @@ namespace PolyChat.Models
         {
             return Connected;
         }
+
+        public string getIP()
+        {
+            return IP;
+        }
     }
 }
