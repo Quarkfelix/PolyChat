@@ -36,21 +36,31 @@ namespace PolyChat
             updateSendButtonEnabled();
         }
 
-        public async void ShowConnectionError(string code, string message)
+        public async void ShowConnectionError(string code, string heading, string message)
         {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                ConnectionFailedDialog dialog = new ConnectionFailedDialog(message);
-                var result = await dialog.ShowAsync();
-                if (result == ContentDialogResult.Primary)
-                {
-                    Controller.Connect(code);
-                    Partners.Add(new ChatPartner(
-                        "Connecting...",
-                        code
-                    ));
-                    updateNoChatsPlaceholder();
-                }
+                Dialog dialog = new Dialog(
+                Dialog.TYPE_ERROR,
+                heading,
+                message,
+                new DialogButton(
+                    "Retry",
+                    () =>
+                    {
+                        Controller.Connect(code);
+                        Partners.Add(new ChatPartner(
+                            "Connecting...",
+                            code
+                        ));
+                        updateNoChatsPlaceholder();
+                    }
+                ),
+                new DialogButton(
+                    "Ignore",
+                    () => { /* do nothing */ }
+                )
+            );
             });
         }
 
@@ -58,7 +68,7 @@ namespace PolyChat
 
         public void OnSendMessage(object sender = null, RoutedEventArgs e = null)
         {
-            selectedPartner.AddMessage(new ChatMessage(username, "message" , inputSend.Text));
+            selectedPartner.AddMessage(new ChatMessage(username, "message", inputSend.Text));
             Controller.SendMessage(selectedPartner.Code, "message", inputSend.Text);
             // clear input
             inputSend.Text = "";

@@ -8,6 +8,10 @@ using SocketIOSharp.Server.Client;
 
 namespace PolyChat
 {
+
+    // 10.1.211.26 Marc
+    // 10.1.218.90 Felix
+    // 10.4.141.77 Pat
     class Controller
     {
         // Constants
@@ -28,10 +32,6 @@ namespace PolyChat
             UIController = uiController;
             OwnIP = getIP();
             Serve();
-
-            //Connect("10.1.211.26"); // Marc
-            //Connect("10.1.218.90"); // Felix
-            //Connect("10.4.141.77"); // Pat
         }
 
         public void Connect(string ip)
@@ -43,9 +43,7 @@ namespace PolyChat
         private void Serve()
         {
             Debug.WriteLine("--- Controller.Serve ---");
-            SocketIOServer server = new SocketIOServer(new SocketIOServerOption(
-                PORT
-            ));
+            SocketIOServer server = new SocketIOServer(new SocketIOServerOption(PORT));
             server.Start();
             Debug.WriteLine("Port " + server.Option.Port);
             Debug.WriteLine("Path " + server.Option.Path);
@@ -95,7 +93,7 @@ namespace PolyChat
             Connections.Remove(IP);
             UIController.OnChatPartnerDeleted(IP);
             if(!wasConnected)
-                UIController.ShowConnectionError(IP, $"Connection to {IP} failed...");
+                UIController.ShowConnectionError("Connection close", IP, $"Connection to {IP} failed...");
         }
 
         public string getIP()
