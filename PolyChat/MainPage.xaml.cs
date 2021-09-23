@@ -26,6 +26,8 @@ namespace PolyChat
         private ObservableCollection<ChatPartner> Partners;
         private ChatPartner selectedPartner = null;
         private string username;
+        private static ElementTheme Theme = ElementTheme.Light;
+        
 
         public MainPage()
         {
@@ -35,6 +37,9 @@ namespace PolyChat
             // ui variables
             ipAddress.Text = IP.GetCodeFromIP(Controller.getIP());
             Partners = new ObservableCollection<ChatPartner>();
+            // theming
+            RequestedTheme = Theme;
+            // updated placeholder
             updateNoChatsPlaceholder();
             updateNoUsernamePlaceholder();
             updateNoChatSelected();
@@ -185,7 +190,6 @@ namespace PolyChat
             });
         }
 
-
         private void OnDeleteChat(object sender = null, RoutedEventArgs e = null)
         {
             Controller.CloseChat(selectedPartner.Code);
@@ -214,6 +218,12 @@ namespace PolyChat
             if (!Controller.IsConnected(code)) Controller.Connect(code);
         }
 
+        public void OnToggleTheme(object sender, RoutedEventArgs e)
+        {
+            Theme = Theme == ElementTheme.Light ? ElementTheme.Dark : ElementTheme.Light;
+            RequestedTheme = Theme;
+        }
+
         private void OnKeyUp(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
             updateSendButtonEnabled();
@@ -229,6 +239,10 @@ namespace PolyChat
                 return d.ShowAsync();
             return null;
         }
+
+        // GETTERS
+
+        public static ElementTheme GetTheme() => Theme;
 
         // UPDATE FUNCTIONS FOR UI PLACEHOLDERS
 

@@ -20,6 +20,7 @@ namespace PolyChat.Views
         {
             this.InitializeComponent();
             IsPrimaryButtonEnabled = false;
+            RequestedTheme = MainPage.GetTheme();
         }
 
         public string getValue()
