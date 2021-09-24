@@ -11,10 +11,10 @@ serverless chat app written in c# using [`SocketIOSharp`](https://github.com/uhm
 
 ### Implentation:
 - network connection via the library [`SocketIOSharp`](https://github.com/uhm0311/SocketIOSharp)
-- graphical user interface uses  `UWP` (Universal Windows App)
+- graphical user interface uses `UWP` (Universal Windows App)
 - messages are sent via json
-- chat history gets saved as json after encryption 
+- chat history gets saved as json after encryption
 
 ### Screenshots:
 ![light mode](screenshots/polychat_light.PNG "light mode")
-![dark mode](screenshots/polychat_light.PNG "dark mode")
+![dark mode](screenshots/polychat_dark.PNG "dark mode")
