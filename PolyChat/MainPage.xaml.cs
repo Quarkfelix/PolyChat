@@ -87,7 +87,7 @@ namespace PolyChat
         public async void OnOpenNewChatDialog(object sender = null, RoutedEventArgs e = null)
         {
             // test
-            /**/
+            /*
             OnIncomingMessage(
                 "localhost",
                 new JObject(
@@ -96,7 +96,7 @@ namespace PolyChat
                 ).ToString(),
                 DateTime.Now
              );
-            /**/
+            */
             NewChatDialog dialog = new NewChatDialog();
             var result = await SafelyOpenDialog(dialog);
             if (result == ContentDialogResult.Primary)
