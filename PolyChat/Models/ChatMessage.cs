@@ -1,29 +1,42 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Text.Json;
+using Windows.UI.Xaml;
 
 namespace PolyChat.Models
 {
     public class ChatMessage
     {
-        public readonly string Sender;
-        public readonly DateTime Timestamp = new DateTime(1970, 01, 01);
-        public readonly string Content;
-        public readonly string Ip;
-        public readonly bool Foreign;
+        public string Origin;
+        public string Type;
+        public string Content;
+        public DateTime TimeStamp;
+        public HorizontalAlignment Align;
+        private bool Foreign;
 
-        public ChatMessage(string Content = "", bool Foreign = true, string Sender= "Unknown", string Ip = "127.0.0.1")
+        /// <summary>
+        /// Create Message
+        /// </summary>
+        /// <param name="origin">Origin IP</param>
+        /// <param name="type">Message Type, usually "message"</param>
+        /// <param name="content">Message Content, usually plain text</param>
+        /// <param name="timeStamp">Parsed DateTime</param>
+        public ChatMessage(string origin, string type, string content, DateTime timeStamp, bool foreign)
         {
-            this.Sender = Sender;
-            this.Timestamp = DateTime.Now;
-            this.Content = Content;
-            this.Foreign = Foreign;
-            this.Ip = Ip;
+            Origin = origin;
+            TimeStamp = timeStamp;
+            Type = type;
+            Content = content;
+            Align = foreign ? HorizontalAlignment.Right : HorizontalAlignment.Left;
+            Foreign = foreign;
+            Debug.WriteLine("Created Loaded Message: " + ToString());            
         }
 
         override
         public string ToString()
         {
             string prefix = Foreign ? "Other" : "Me";
-            return $"{prefix}: {Content}({Sender})";
+            return $"{Type} from {prefix}: {Content}({Origin})";
         }
     }
 }

@@ -22,6 +22,7 @@ namespace PolyChat.Views
             if (initialValue == null || initialValue.Length == 0) IsSecondaryButtonEnabled = false;
             else  input.Text = initialValue;
             validate();
+            RequestedTheme = MainPage.GetTheme();
         }
 
         public string getValue()

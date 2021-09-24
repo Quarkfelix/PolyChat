@@ -13,8 +13,8 @@
 
   <Identity
     Name="ee2ef4f2-e61b-497a-8f0e-9fa7c90234b1"
-    Publisher="CN=HPL2FE"
-    Version="1.0.0.0" />
+    Publisher="CN=PatrickMarcFelix"
+    Version="0.1.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="ee2ef4f2-e61b-497a-8f0e-9fa7c90234b1" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

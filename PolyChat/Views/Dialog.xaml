@@ -1,17 +1,20 @@
-﻿<ContentDialog x:Class="PolyChat.Views.ConnectionFailedDialog"
+﻿<ContentDialog x:Class="PolyChat.Views.Dialog"
                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                xmlns:local="using:PolyChat.Views"
                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                x:Name="MessageDialog"
-               Title="Connection Failed"
-               PrimaryButtonText="Retry"
-               SecondaryButtonText="Abort"
+               Title="Header"
+               PrimaryButtonText="Primary"
+               PrimaryButtonClick="OnPrimaryButtonClick"
+               SecondaryButtonText="Secondary"
+               SecondaryButtonClick="OnSecondaryButtonClick"
                mc:Ignorable="d">
 
     <StackPanel>
         <TextBlock Text="Message:" Foreground="{ThemeResource SystemColorDisabledTextColor}" Margin="0 0 0 8"/>
-        <TextBlock x:Name="textError" Foreground="{ThemeResource SystemErrorTextColor}"/>
+        <TextBlock x:Name="textError" Foreground="{ThemeResource SystemErrorTextColor}" Visibility="Collapsed"/>
+        <TextBlock x:Name="textSuccess" Foreground="{ThemeResource SystemAccentColor}" Visibility="Collapsed"/>
     </StackPanel>
 </ContentDialog>
