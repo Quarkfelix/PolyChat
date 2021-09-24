@@ -1,5 +1,5 @@
 # Polychat 
-![Logo](/PolyChat/Assets/polychat_logo.svg "Logo")
+![Logo](PolyChat/Assets/polychat_logo.svg "Logo")
 serverless chat app written in c# using [`SocketIOSharp`](https://github.com/uhm0311/SocketIOSharp) & `UWP`
 
 ### Features:
@@ -16,5 +16,5 @@ serverless chat app written in c# using [`SocketIOSharp`](https://github.com/uhm
 - chat history gets saved as json after encryption 
 
 ### Screenshots:
-![light mode](/screenshots/polychat_light.PNG "light mode")
-![dark mode](/screenshots/polychat_light.PNG "dark mode")
+![light mode](screenshots/polychat_light.PNG "light mode")
+![dark mode](screenshots/polychat_light.PNG "dark mode")
