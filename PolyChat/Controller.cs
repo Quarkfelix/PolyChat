@@ -2,17 +2,10 @@
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using System.Net;
-using PolyChat.Models;
 using SocketIOSharp.Server;
 using SocketIOSharp.Server.Client;
-using System.IO;
-using System.Threading;
+using PolyChat.Models;
 using System;
-using System.Text;
-using System.Security.Cryptography;
-using Windows.Security.Cryptography.Core;
-using Windows.Security.Cryptography;
-using Windows.Storage.Streams;
 
 namespace PolyChat
 { 
